@@ -265,6 +265,8 @@ void LabelBoxesLayer::moveBoxesOut(){
     for (int i = 0; i < this->getChildren().size(); i++) {
         auto move = MoveTo::create(3, this->getRandomOuterPosition());
         
+        //this->getChildren().at(i)->setColor(this->getRandomBrightColor());
+        
         if (i == 0) {
             this->getChildren().at(i)->runAction(seq);
         }else{
