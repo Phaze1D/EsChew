@@ -64,7 +64,7 @@ void MainController::createMainMenuScene(){
 
 void MainController::createGameplayScene(){
     
-    gameplayScene = GameplayScene::create();
+    gameplayScene = GameplayScene::createWithPhysics();
     Director::getInstance()->replaceScene(gameplayScene);
     
     
