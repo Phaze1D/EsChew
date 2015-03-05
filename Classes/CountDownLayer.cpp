@@ -39,19 +39,15 @@ void CountDownLayer::update(float timeTook){
     if ((int)timePassed == 0 && !didCreateOne) {
         createBoxes(threePosition);
         didCreateOne = true;
-        CCLOG("%d", (int)timePassed);
     }else if ((int)timePassed == 1 && !didCreateTwo){
         createBoxes(twoPosition);
         didCreateTwo = true;
-        CCLOG("%d", (int)timePassed);
     }else if((int)timePassed == 2 && !didCreateThree){
         createBoxes(onePosition);
         didCreateThree = true;
-        CCLOG("%d", (int)timePassed);
     }
     
     if ((int)timePassed >= 3) {
-        CCLOG("%d", (int)timePassed);
         this->unscheduleUpdate();
         this->moveToOutter();
     }
