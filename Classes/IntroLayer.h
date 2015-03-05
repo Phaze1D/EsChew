@@ -25,7 +25,12 @@ public:
     
     void buildIntro();
     
+    void update(float) override;
+    
 private:
+    
+    void buildCrossButton();
+    void buildIntroAnimation();
     
     void addEvents();
     

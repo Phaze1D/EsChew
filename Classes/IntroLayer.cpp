@@ -26,25 +26,37 @@ IntroLayer* IntroLayer::create(const cocos2d::Color4B &color){
 }
 
 void IntroLayer::buildIntro(){
+    this->buildCrossButton();
+    this->buildIntroAnimation();
+    this->scheduleUpdate();
     
-    auto spriteTest = Sprite::create("cross.png");
-    spriteTest->setScale(.2);
-    spriteTest->setAnchorPoint(Vec2(0.5, 0.5));
-    spriteTest->setPosition(Vec2(0, this->getContentSize().height));
-    this->addChild(spriteTest);
+}
+
+void IntroLayer::update(float timeTook){
+    
+}
+
+void IntroLayer::buildCrossButton(){
+    
+    auto crossButton = Sprite::create("cross.png");
+    crossButton->setScale(.2);
+    crossButton->setAnchorPoint(Vec2(0.5, 0.5));
+    crossButton->setPosition(Vec2(0, this->getContentSize().height));
+    this->addChild(crossButton);
     
     
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
     
-    listener->onTouchBegan = [&, spriteTest](Touch* touch, Event* event){
+    listener->onTouchBegan = [&, crossButton](Touch* touch, Event* event){
         
-        Rect rect = spriteTest->getBoundingBox();
+        Rect rect = crossButton->getBoundingBox();
         Vec2 point = touch->getLocation();
         rect.size.height = rect.size.height*5;
         rect.size.width = rect.size.width*5;
         
         if (rect.containsPoint(point)) {
+            this->unscheduleUpdate();
             this->crossClicked();
             return true;
         }
@@ -61,11 +73,10 @@ void IntroLayer::buildIntro(){
         // your code
     };
     
-    Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, spriteTest);
+    Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, crossButton);
+}
 
-    
-    
-    
+void IntroLayer::buildIntroAnimation(){
     
 }
 
