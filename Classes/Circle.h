@@ -10,5 +10,15 @@
 #define __SQ__Circle__
 
 #include <stdio.h>
+#include "cocos2d.h"
+
+class Circle: public cocos2d::Sprite {
+    
+    
+public:
+    
+    CREATE_FUNC(Circle);
+    
+};
 
 #endif /* defined(__SQ__Circle__) */

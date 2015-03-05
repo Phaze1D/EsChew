@@ -7,3 +7,4 @@
 //
 
 #include "Circle.h"
+USING_NS_CC;
