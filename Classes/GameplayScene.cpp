@@ -46,8 +46,8 @@ void GameplayScene::createIntroLayer(){
     
     CCLOG("%d -- %d -- %d", r,g,b);
     
-    IntroLayer * intro = IntroLayer::create(Color4B(r, g, b, 50));
-    //IntroLayer * intro = IntroLayer::create(Color4B(255,255,0,50));
+    //IntroLayer * intro = IntroLayer::create(Color4B(r, g, b, 50));
+    IntroLayer * intro = IntroLayer::create(Color4B(148,0,211,50));
     intro->setContentSize(Size(winSize.width - 180, winSize.height - 150));
     intro->setPosition(winSize.width/2 - intro->getContentSize().width/2, winSize.height/2 - intro->getContentSize().height/2);
     intro->buildIntro();
