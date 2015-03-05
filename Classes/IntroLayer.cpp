@@ -25,14 +25,24 @@ IntroLayer* IntroLayer::create(const cocos2d::Color4B &color){
     
 }
 
-void IntroLayer::buildIntro(){
-    this->buildCrossButton();
-    this->buildIntroAnimation();
-    this->scheduleUpdate();
+void IntroLayer::update(float timeTook){
+    
+    //Spawn Box
+    if (timePassed >= defaultSpawnRate) {
+        this->addChild(spawner->spawnBox());
+        
+    }
+    
+    //Remove Box if box is out of layer bound
     
 }
 
-void IntroLayer::update(float timeTook){
+void IntroLayer::buildIntro(){
+    defaultSpawnRate = 1/5.0;
+    this->buildCrossButton();
+    this->buildLives();
+    this->buildIntroAnimation();
+    //this->scheduleUpdate();
     
 }
 
@@ -56,7 +66,8 @@ void IntroLayer::buildCrossButton(){
         rect.size.width = rect.size.width*5;
         
         if (rect.containsPoint(point)) {
-            this->unscheduleUpdate();
+            //this->unscheduleUpdate();
+            delete this->spawner;
             this->crossClicked();
             return true;
         }
@@ -76,7 +87,28 @@ void IntroLayer::buildCrossButton(){
     Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, crossButton);
 }
 
+void IntroLayer::buildLives(){
+    LivesLayer * liveLayer = LivesLayer::create(Color4B(255, 255, 255, 0));
+    liveLayer->buildLives();
+    
+    this->addChild(liveLayer);
+    
+    
+}
+
 void IntroLayer::buildIntroAnimation(){
+    this->buildSpawner();
+    this->buildCircle();
+    
+}
+
+void IntroLayer::buildSpawner(){
+    spawner = new MySpawner();
+    spawner->createSpawner(RIGHT, this->getContentSize().height);
+    
+}
+
+void IntroLayer::buildCircle(){
     
 }
 

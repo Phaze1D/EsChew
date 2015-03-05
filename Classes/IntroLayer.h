@@ -11,9 +11,20 @@
 
 #include <stdio.h>
 #include "cocos2d.h"
+#include "MySpawner.h"
+#include "Circle.h"
+#include "LivesLayer.h"
 
 class IntroLayer: public cocos2d::LayerColor {
     
+private:
+    MySpawner * spawner;
+    
+    Circle * circle;
+    
+    float defaultSpawnRate;
+    float timePassed;
+    float deltaTime;
     
 public:
     
@@ -30,7 +41,10 @@ public:
 private:
     
     void buildCrossButton();
+    void buildLives();
     void buildIntroAnimation();
+    void buildSpawner();
+    void buildCircle();
     
     void addEvents();
     
