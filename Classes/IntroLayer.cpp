@@ -53,7 +53,7 @@ void IntroLayer::buildCrossButton(){
     crossButton->setAnchorPoint(Vec2(0.5, 0.5));
     crossButton->setPosition(Vec2(0, this->getContentSize().height));
     this->addChild(crossButton);
-    
+   
     
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
@@ -89,8 +89,8 @@ void IntroLayer::buildCrossButton(){
 
 void IntroLayer::buildLives(){
     LivesLayer * liveLayer = LivesLayer::create(Color4B(255, 255, 255, 0));
-    liveLayer->buildLives();
-    
+    liveLayer->buildLives(.15);
+    liveLayer->setPosition(Vec2(this->getContentSize().width - liveLayer->getContentSize().width, this->getContentSize().height - liveLayer->getContentSize().height));
     this->addChild(liveLayer);
     
     
