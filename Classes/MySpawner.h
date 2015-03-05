@@ -11,12 +11,30 @@
 
 #include <stdio.h>
 #include "cocos2d.h"
+#include "SquareBox.h"
+
+enum SpawnerPosition {
+    UPPER,
+    LOWER,
+    RIGHT,
+    LEFT,
+};
 
 class MySpawner {
     
+private:
+    cocos2d::Size sceneSize;
+    SpawnerPosition position;
     
 public:
     
+    void createSpawner(SpawnerPosition position, cocos2d::Size sceneSize);
+    
+    SquareBox* spawnBox();
+  
+private:
+    cocos2d::Color3B createRandomBrightColor();
 };
+
 
 #endif /* defined(__SQ__MySpawner__) */
