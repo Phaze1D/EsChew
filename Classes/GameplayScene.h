@@ -18,10 +18,8 @@ class GameplayScene: public cocos2d::Scene {
     
     
 public:
-    
-    virtual bool init();
-    
-    CREATE_FUNC(GameplayScene);
+
+    static GameplayScene * createWithPhysics();
     
     
 private:

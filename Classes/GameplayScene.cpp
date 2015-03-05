@@ -11,25 +11,26 @@
 USING_NS_CC;
 
 
-bool GameplayScene::init(){
-    
-    if (!Scene::init()) {
-        return false;
-    }
-    
-    this->createBackground();
-    
-    //Player has not seen intro
-    if (true) {
-        this->createIntroLayer();
-    }else{
+GameplayScene* GameplayScene::createWithPhysics(){
+    GameplayScene *ret = new (std::nothrow) GameplayScene();
+    if (ret && ret->initWithPhysics()){
+        ret->autorelease();
         
+        ret->createBackground();
+        
+        //Player has not seen intro
+        if (true) {
+            ret->createIntroLayer();
+        }else{
+            
+        }
+        return ret;
     }
-    
-    return true;
-    
+    else{
+        CC_SAFE_DELETE(ret);
+        return nullptr;
+    }
 }
-
 
 void GameplayScene::createBackground(){
     BackgroundLayer * backLayer = BackgroundLayer::create();
