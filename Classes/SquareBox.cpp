@@ -7,3 +7,9 @@
 //
 
 #include "SquareBox.h"
+
+USING_NS_CC;
+
+void SquareBox::createPhysicsBody(Vec2 velocity){
+    
+}

@@ -10,5 +10,20 @@
 #define __SQ__SquareBox__
 
 #include <stdio.h>
+#include "cocos2d.h"
+
+class SquareBox: public cocos2d::Sprite{
+    
+private:
+    cocos2d::Vec2 velocity;
+    
+    
+public:
+    
+    CREATE_FUNC(SquareBox);
+    
+    void createPhysicsBody(cocos2d::Vec2 velocity);
+    
+};
 
 #endif /* defined(__SQ__SquareBox__) */
