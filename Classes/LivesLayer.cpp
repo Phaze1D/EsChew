@@ -41,7 +41,7 @@ void LivesLayer::buildLives(float scale){
     
     Sprite* live2 = Sprite::create("circle.png");
     live2->setColor(color2);
-    live1->setTag(LIVE2_TAG);
+    live2->setTag(LIVE2_TAG);
     live2->setAnchorPoint(Vec2(0, 0));
     live2->setPosition(offset*2 + live1->getBoundingBox().size.width, offset);
     this->scaleCorrectly(scale, live2);
@@ -52,12 +52,10 @@ void LivesLayer::buildLives(float scale){
     Sprite* live3 = Sprite::create("circle.png");
     live3->setColor(color3);
     live3->setAnchorPoint(Vec2(0, 0));
-    live1->setTag(LIVE3_TAG);
+    live3->setTag(LIVE3_TAG);
     live3->setPosition(offset*3 +live1->getBoundingBox().size.width*2, offset);
     this->scaleCorrectly(scale, live3);
     this->addChild(live3);
-    
-    
 
     this->resize();
 }
@@ -68,8 +66,8 @@ void LivesLayer::decreaseLives(){
 
 void LivesLayer::resize(){
     
-    float reWidth = this->getChildren().at(0)->getBoundingBox().size.width*3 + offset*4;
-    float reHeight = this->getChildren().at(0)->getBoundingBox().size.height + offset*2;
+    float reWidth = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.width*3 + offset*4;
+    float reHeight = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.height + offset*2;
     this->setContentSize(Size(reWidth, reHeight));
 }
 
