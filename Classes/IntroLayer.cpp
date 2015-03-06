@@ -29,20 +29,31 @@ void IntroLayer::update(float timeTook){
     
     //Spawn Box
     if (timePassed >= defaultSpawnRate) {
-        this->addChild(spawner->spawnBox());
+        auto box = spawner->spawnBox(Size(9, 9), Vec2(181,0));
+        this->addChild(box);
+        boxesIn.pushBack(box);
+        timePassed = 0;
         
     }
     
-    //Remove Box if box is out of layer bound
+    if (boxesIn.size() > 0) {
+        SquareBox * front = boxesIn.front();
+        if (front->getPosition().x <= 0) {
+            front->removeFromParent();
+            boxesIn.eraseObject(front);
+        }
+    }
     
+    timePassed += timeTook;
 }
 
 void IntroLayer::buildIntro(){
-    defaultSpawnRate = 1/5.0;
+    defaultSpawnRate = 1/1.0;
+    boxesIn = Vector<SquareBox*>();
     this->buildCrossButton();
     this->buildLives();
     this->buildIntroAnimation();
-    //this->scheduleUpdate();
+    this->scheduleUpdate();
     
 }
 
@@ -66,8 +77,9 @@ void IntroLayer::buildCrossButton(){
         rect.size.width = rect.size.width*5;
         
         if (rect.containsPoint(point)) {
-            //this->unscheduleUpdate();
+            this->unscheduleUpdate();
             delete this->spawner;
+            this->boxesIn.clear();
             this->crossClicked();
             return true;
         }
@@ -104,7 +116,8 @@ void IntroLayer::buildIntroAnimation(){
 
 void IntroLayer::buildSpawner(){
     spawner = new MySpawner();
-    spawner->createSpawner(RIGHT, this->getContentSize().height);
+    spawner->createSpawner(RIGHT, this->getBoundingBox());
+    
     
 }
 

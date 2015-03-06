@@ -14,6 +14,8 @@
 #include "MySpawner.h"
 #include "Circle.h"
 #include "LivesLayer.h"
+#include "SquareBox.h"
+
 
 class IntroLayer: public cocos2d::LayerColor {
     
@@ -23,8 +25,11 @@ private:
     Circle * circle;
     
     float defaultSpawnRate;
-    float timePassed;
-    float deltaTime;
+    float timePassed = 0;
+    
+    //float deltaTime;
+    
+    cocos2d::Vector<SquareBox *> boxesIn;
     
 public:
     
