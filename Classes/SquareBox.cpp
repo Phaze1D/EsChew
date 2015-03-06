@@ -10,6 +10,10 @@
 
 USING_NS_CC;
 
-void SquareBox::createPhysicsBody(Vec2 velocity){
+void SquareBox::createPhysicsBody(Size size){
+    PhysicsBody * phyBody = PhysicsBody::createBox(size);
+    phyBody->setDynamic(true);
+    phyBody->setLinearDamping(0);
+    this->setPhysicsBody(phyBody);
     
 }

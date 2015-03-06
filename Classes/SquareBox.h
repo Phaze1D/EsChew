@@ -22,7 +22,7 @@ public:
     
     CREATE_FUNC(SquareBox);
     
-    void createPhysicsBody(cocos2d::Vec2 velocity);
+    void createPhysicsBody(cocos2d::Size size);
     
 };
 
