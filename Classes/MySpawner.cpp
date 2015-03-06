@@ -10,15 +10,64 @@
 USING_NS_CC;
 
 void MySpawner::createSpawner(SpawnerPosition position, Rect sceneRect){
-    this->sceneSize = sceneSize;
+    this->sceneRect = sceneRect;
     this->position = position;
 }
 
 
-SquareBox* MySpawner::spawnBox(){
+SquareBox* MySpawner::spawnBox(Size boxSize, Vec2 velocity){
     
+    SquareBox * box = SquareBox::create();
+    box->setTextureRect(Rect(0, 0,boxSize.width, boxSize.height));
+    box->setColor(this->createRandomBrightColor());
+    box->setPosition(this->getRandomPosition());
+    box->createPhysicsBody(boxSize);
     
-    return nullptr;
+    this->getFinalVelocity(&velocity);
+    box->getPhysicsBody()->setVelocity(velocity);
+    
+    return box;
+}
+
+void MySpawner::getFinalVelocity(cocos2d::Vec2 *velocity){
+    
+    if (position == RIGHT) {
+        velocity->x = velocity->x * -1;
+        
+    }else if (position == LEFT){
+        
+        
+    }else if(position == UPPER){
+        velocity->y = velocity->y * -1;
+        
+    }else if(position == LOWER){
+        
+    }
+}
+
+Vec2 MySpawner::getRandomPosition(){
+    
+    float x = 0;
+    float y = 0;
+    
+    if (position == RIGHT) {
+        x = sceneRect.size.width;
+        y = random((float)0,sceneRect.size.height);
+        
+    }else if (position == LEFT){
+        x = 0;
+        y = random((float)0,sceneRect.size.height);
+        
+    }else if(position == UPPER){
+        x = random((float)0, sceneRect.size.width);
+        y = sceneRect.size.height;
+        
+    }else if(position == LOWER){
+        x = random((float)0, sceneRect.size.width);
+        y = 0;
+    }
+    
+    return Vec2(x, y);
 }
 
 

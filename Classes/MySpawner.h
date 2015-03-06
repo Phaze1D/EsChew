@@ -23,17 +23,19 @@ enum SpawnerPosition {
 class MySpawner {
     
 private:
-    cocos2d::Rect sceneSize;
+    cocos2d::Rect sceneRect;
     SpawnerPosition position;
     
 public:
     
     void createSpawner(SpawnerPosition position, cocos2d::Rect sceneRect);
     
-    SquareBox* spawnBox();
+    SquareBox* spawnBox(cocos2d::Size boxSize, cocos2d::Vec2 velocity);
   
 private:
     cocos2d::Color3B createRandomBrightColor();
+    cocos2d::Vec2 getRandomPosition();
+    void getFinalVelocity(cocos2d::Vec2* velocity);
 };
 
 
