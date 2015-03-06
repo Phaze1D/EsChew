@@ -9,7 +9,7 @@
 #include "MySpawner.h"
 USING_NS_CC;
 
-void MySpawner::createSpawner(SpawnerPosition position, Size sceneSize){
+void MySpawner::createSpawner(SpawnerPosition position, Rect sceneRect){
     this->sceneSize = sceneSize;
     this->position = position;
 }
@@ -28,7 +28,7 @@ Color3B MySpawner::createRandomBrightColor(){
     
     int ave = (color.r + color.g + color.b)/3;
     
-    if (ave < 70) {
+    if (ave < 80) {
         int rannum = random(1, 3);
         if (rannum == 1) {
             color.r += 40;

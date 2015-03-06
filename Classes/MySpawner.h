@@ -23,12 +23,12 @@ enum SpawnerPosition {
 class MySpawner {
     
 private:
-    cocos2d::Size sceneSize;
+    cocos2d::Rect sceneSize;
     SpawnerPosition position;
     
 public:
     
-    void createSpawner(SpawnerPosition position, cocos2d::Size sceneSize);
+    void createSpawner(SpawnerPosition position, cocos2d::Rect sceneRect);
     
     SquareBox* spawnBox();
   
