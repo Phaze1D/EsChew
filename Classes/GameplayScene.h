@@ -23,7 +23,7 @@ public:
     
     
 private:
-    
+    void buildScene();
     void createBackground();
     void createIntroLayer();
     void createCountDown();

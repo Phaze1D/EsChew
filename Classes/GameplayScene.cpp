@@ -15,20 +15,25 @@ GameplayScene* GameplayScene::createWithPhysics(){
     GameplayScene *ret = new (std::nothrow) GameplayScene();
     if (ret && ret->initWithPhysics()){
         ret->autorelease();
-        
-        ret->createBackground();
-        
-        //Player has not seen intro
-        if (true) {
-            ret->createIntroLayer();
-        }else{
-            
-        }
+        ret->buildScene();
         return ret;
     }
     else{
         CC_SAFE_DELETE(ret);
         return nullptr;
+    }
+}
+
+void GameplayScene::buildScene(){
+    this->getPhysicsWorld()->setGravity(Vec2(0, 0));
+    
+    this->createBackground();
+    
+    //Player has not seen intro
+    if (true) {
+        this->createIntroLayer();
+    }else{
+        
     }
 }
 
