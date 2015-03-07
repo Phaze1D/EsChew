@@ -31,6 +31,8 @@ public:
     void createSpawner(SpawnerPosition position, cocos2d::Rect sceneRect);
     
     SquareBox* spawnBox(cocos2d::Size boxSize, cocos2d::Vec2 velocity);
+    
+    SquareBox* introSpawnBox(cocos2d::Size boxSize, cocos2d::Vec2 velocity);
   
 private:
     cocos2d::Color3B createRandomBrightColor();

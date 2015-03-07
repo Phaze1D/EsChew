@@ -29,6 +29,23 @@ SquareBox* MySpawner::spawnBox(Size boxSize, Vec2 velocity){
     return box;
 }
 
+
+SquareBox* MySpawner::introSpawnBox(Size boxSize, Vec2 velocity){
+    
+    SquareBox * box = SquareBox::create();
+    box->setTextureRect(Rect(0, 0,boxSize.width, boxSize.height));
+    box->setColor(this->createRandomBrightColor());
+    box->setPosition(this->getRandomPosition());
+    box->createPhysicsBody(boxSize);
+    
+    this->getFinalVelocity(&velocity);
+    box->getPhysicsBody()->setVelocity(velocity);
+    
+    return box;
+}
+
+
+
 void MySpawner::getFinalVelocity(cocos2d::Vec2 *velocity){
     
     if (position == RIGHT) {
