@@ -19,6 +19,9 @@
 
 class IntroLayer: public cocos2d::LayerColor {
     
+public:
+    static const int LIVE_LAYER = 101;
+    
 private:
     MySpawner * spawner;
     
@@ -50,6 +53,8 @@ private:
     void buildIntroAnimation();
     void buildSpawner();
     void buildCircle();
+
+    void scaleCorrectly(float scale, cocos2d::Sprite*sprite);
     
     void addEvents();
     
