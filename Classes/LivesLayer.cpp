@@ -64,6 +64,19 @@ void LivesLayer::decreaseLives(){
     
 }
 
+Color3B LivesLayer::getCurrentColor(){
+    
+    if (this->getChildByTag(LIVE1_TAG)) {
+        return this->getChildByTag(LIVE1_TAG)->getColor();
+    }else if(this->getChildByTag(LIVE2_TAG)){
+        return this->getChildByTag(LIVE2_TAG)->getColor();
+    }else{
+        return this->getChildByTag(LIVE3_TAG)->getColor();
+    }
+    
+}
+
+
 void LivesLayer::resize(){
     
     float reWidth = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.width*3 + offset*4;

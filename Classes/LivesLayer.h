@@ -27,6 +27,7 @@ public:
     
     void buildLives(float scale);
     void decreaseLives();
+    cocos2d::Color3B getCurrentColor();
     
 private:
     //Only works with texture size of power of 2
