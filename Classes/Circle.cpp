@@ -20,3 +20,12 @@ Circle* Circle::createWithFile(const std::string& filename){
     CC_SAFE_DELETE(sprite);
     return nullptr;
 }
+
+
+void Circle::createPhysicsBody(){
+    
+    auto phyBody = PhysicsBody::createCircle(this->getBoundingBox().size.height/2);
+    phyBody->setDynamic(false);
+    this->setPhysicsBody(phyBody);
+    
+}

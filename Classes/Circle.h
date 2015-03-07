@@ -18,6 +18,8 @@ class Circle: public cocos2d::Sprite {
 public:
    static Circle* createWithFile(const std::string& filename);
     
+    void createPhysicsBody();
+    
     
 };
 
