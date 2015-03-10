@@ -61,7 +61,14 @@ void LivesLayer::buildLives(float scale){
 }
 
 void LivesLayer::decreaseLives(){
-    
+    if (this->getChildByTag(LIVE1_TAG)) {
+        this->getChildByTag(LIVE1_TAG)->removeFromParent();
+        
+    }else if(this->getChildByTag(LIVE2_TAG)){
+        this->getChildByTag(LIVE2_TAG)->removeFromParent();
+    }else if(this->getChildByTag(LIVE3_TAG)){
+        this->getChildByTag(LIVE3_TAG)->removeFromParent();
+    }
 }
 
 Color3B LivesLayer::getCurrentColor(){
@@ -70,16 +77,15 @@ Color3B LivesLayer::getCurrentColor(){
         return this->getChildByTag(LIVE1_TAG)->getColor();
     }else if(this->getChildByTag(LIVE2_TAG)){
         return this->getChildByTag(LIVE2_TAG)->getColor();
-    }else{
+    }else if(this->getChildByTag(LIVE3_TAG)){
         return this->getChildByTag(LIVE3_TAG)->getColor();
     }
-    
 }
 
 
 void LivesLayer::resize(){
     
-    float reWidth = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.width*3 + offset*4;
+    float reWidth = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.width*this->getChildren().size() + offset*(this->getChildren().size()+1);
     float reHeight = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.height + offset*2;
     this->setContentSize(Size(reWidth, reHeight));
 }
