@@ -12,7 +12,10 @@ USING_NS_CC;
 void MySpawner::createSpawner(SpawnerPosition position, Rect sceneRect){
     this->sceneRect = sceneRect;
     this->position = position;
+    
 }
+
+
 
 
 SquareBox* MySpawner::spawnBox(Size boxSize, Vec2 velocity){
@@ -22,7 +25,6 @@ SquareBox* MySpawner::spawnBox(Size boxSize, Vec2 velocity){
     box->setColor(this->createRandomBrightColor());
     box->setPosition(this->getRandomPosition());
     box->createPhysicsBody(boxSize);
-    
     this->getFinalVelocity(&velocity);
     box->getPhysicsBody()->setVelocity(velocity);
     
@@ -35,7 +37,10 @@ SquareBox* MySpawner::introSpawnBox(Size boxSize, Vec2 velocity){
     SquareBox * box = SquareBox::create();
     box->setTextureRect(Rect(0, 0,boxSize.width, boxSize.height));
     box->setColor(this->createRandomBrightColor());
-    box->setPosition(this->getRandomPosition());
+    
+    box->setPosition(this->getRandomIntroPosition());
+    passIntroY = box->getPosition().y;
+    
     box->createPhysicsBody(boxSize);
     
     this->getFinalVelocity(&velocity);
@@ -43,6 +48,43 @@ SquareBox* MySpawner::introSpawnBox(Size boxSize, Vec2 velocity){
     
     return box;
 }
+
+StarPower* MySpawner::spawnStar(Vec2 velocity){
+    
+    StarPower * star = StarPower::createWithFile("starPower.png");
+    this->scaleCorrectly(.15, star);
+    star->createPhysicsBody();
+    star->setPosition(this->getRandomIntroPosition());
+    this->getFinalVelocity(&velocity);
+    star->getPhysicsBody()->setVelocity(velocity);
+    star->runAnimation();
+    
+    return star;
+    
+}
+
+void MySpawner::scaleCorrectly(float scale, Sprite * sprite){
+    sprite->getTexture()->generateMipmap();
+    cocos2d::Texture2D::TexParams texpar = {GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE};
+    sprite->getTexture()->setTexParameters(texpar);
+    sprite->setScale(scale);
+}
+
+
+Vec2 MySpawner::getRandomIntroPosition(){
+    float x = sceneRect.size.width;
+    float y = 10;
+    
+    do{
+        y = random(ballSize.height/2,sceneRect.size.height - ballSize.height/2);
+        
+    }while (y > (passIntroY - ballSize.width) && y < (passIntroY + ballSize.width) );
+    
+    return Vec2(x, y);
+}
+
+
+
 
 
 

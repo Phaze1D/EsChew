@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "cocos2d.h"
 #include "SquareBox.h"
+#include "StarPower.h"
 
 enum SpawnerPosition {
     UPPER,
@@ -22,9 +23,14 @@ enum SpawnerPosition {
 
 class MySpawner {
     
+public:
+    cocos2d::Size ballSize;
+    
 private:
     cocos2d::Rect sceneRect;
     SpawnerPosition position;
+    
+    float passIntroY = 0;
     
 public:
     
@@ -33,11 +39,18 @@ public:
     SquareBox* spawnBox(cocos2d::Size boxSize, cocos2d::Vec2 velocity);
     
     SquareBox* introSpawnBox(cocos2d::Size boxSize, cocos2d::Vec2 velocity);
+    
+    StarPower * spawnStar(cocos2d::Vec2 velocity);
   
 private:
     cocos2d::Color3B createRandomBrightColor();
+    
     cocos2d::Vec2 getRandomPosition();
+    cocos2d::Vec2 getRandomIntroPosition();
+    
     void getFinalVelocity(cocos2d::Vec2* velocity);
+    void scaleCorrectly(float scale, cocos2d::Sprite * sprite);
+    
 };
 
 
