@@ -9,7 +9,6 @@
 #ifndef __SQ__IntroLayer__
 #define __SQ__IntroLayer__
 
-#include <stdio.h>
 #include "cocos2d.h"
 #include "MySpawner.h"
 #include "Circle.h"
@@ -32,7 +31,13 @@ private:
     
     //float deltaTime;
     
-    cocos2d::Vector<SquareBox *> boxesIn;
+    cocos2d::Vector<cocos2d::Node *> boxesIn;
+    
+    bool movedCircle = false;
+    bool stopIntro = false;
+    
+    int moveCount = 0;
+    int spawnCount = 0;
     
 public:
     
@@ -46,6 +51,8 @@ public:
     
     void update(float) override;
     
+    bool onContactBegin(cocos2d::PhysicsContact& contact);
+    
 private:
     
     void buildCrossButton();
@@ -53,8 +60,12 @@ private:
     void buildIntroAnimation();
     void buildSpawner();
     void buildCircle();
-
+    void moveCircle();
+    void moveToStar();
     void scaleCorrectly(float scale, cocos2d::Sprite*sprite);
+    void handleCircleStarCol(Node * star);
+    void handleCircleBoxCol(Node * box);
+    void endIntro();
     
     void addEvents();
     

@@ -28,33 +28,151 @@ IntroLayer* IntroLayer::create(const cocos2d::Color4B &color){
 void IntroLayer::update(float timeTook){
     
     //Spawn Box
-    if (timePassed >= defaultSpawnRate) {
-        auto box = spawner->spawnBox(Size(11, 11), Vec2(181,0));
-        this->addChild(box);
-        boxesIn.pushBack(box);
-        timePassed = 0;
+    if (timePassed >= defaultSpawnRate && !stopIntro) {
         
-    }
-    
-    for (int i = 0; i < boxesIn.size(); i++) {
-        SquareBox * front = boxesIn.at(i);
-        if (front->getPosition().x <= 0 || front->getPosition().y <= 0 || front->getPosition().y >= this->getContentSize().height) {
-            front->removeFromParent();
-            boxesIn.eraseObject(front);
+        if (spawnCount == 5) {
+            auto star = spawner->spawnStar(Vec2(481,0));
+            this->addChild(star);
+            timePassed = 0;
+            boxesIn.pushBack(star);
+            spawnCount++;
+            
+        }else{
+            auto box = spawner->introSpawnBox(Size(15, 15), Vec2(481,0));
+            this->addChild(box);
+            boxesIn.pushBack(box);
+            timePassed = 0;
+            spawnCount++;
         }
     }
     
+    for (int i = 0; i < boxesIn.size(); i++) {
+        Node * front = boxesIn.at(i);
+        if ( (front->getPosition().x - front->getBoundingBox().size.width/2) <= 0 || front->getPosition().y <= 0 || front->getPosition().y >= this->getContentSize().height) {
+            front->removeFromParent();
+            boxesIn.eraseObject(front);
+            moveCount = 0;
+        }
+    }
+    
+    if (boxesIn.size() > 2) {
+        this->moveCircle();
+    }
+    
+    if (spawnCount >= 15) {
+        stopIntro = true;
+        if (boxesIn.size() == 0) {
+            this->endIntro();
+        }
+    }
+
     timePassed += timeTook;
 }
 
+void IntroLayer::moveCircle(){
+    
+    
+    if (boxesIn.at(moveCount+1)->getTag() != StarPower::STAR_TAG) {
+        if (boxesIn.at(moveCount)->getPosition().x < circle->getPosition().x) {
+            movedCircle = false;
+            moveCount++;
+        }
+    }
+    
+    if (!movedCircle) {
+        if (circle->isPowerActive) {
+            float x = random(circle->getBoundingBox().size.height, getContentSize().width/5);
+            auto moveto = MoveTo::create(.2, Vec2(x, boxesIn.at(moveCount)->getPosition().y));
+            circle->runAction(moveto);
+            movedCircle = true;
+        }else{
+            if (circle->getPosition().y != boxesIn.at(moveCount+1)->getPosition().y) {
+                float x = random(circle->getBoundingBox().size.height, getContentSize().width/5);
+                auto moveto = MoveTo::create(.2, Vec2(x, boxesIn.at(moveCount+1)->getPosition().y));
+                circle->runAction(moveto);
+                movedCircle = true;
+            }
+        }
+    }
+}
+
 void IntroLayer::buildIntro(){
-    defaultSpawnRate = 1/1.0;
-    boxesIn = Vector<SquareBox*>();
+    defaultSpawnRate = 1/2.0;
+    boxesIn = Vector<Node*>();
     this->buildCrossButton();
     this->buildLives();
     this->buildIntroAnimation();
+    
+    auto contactListener = EventListenerPhysicsContact::create();
+    contactListener->onContactBegin = CC_CALLBACK_1(IntroLayer::onContactBegin, this);
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
+    
     this->scheduleUpdate();
     
+}
+
+void IntroLayer::endIntro(){
+    delete this->spawner;
+    circle->stopAllActions();
+    this->stopAllActions();
+    this->boxesIn.clear();
+    this->crossClicked();
+}
+
+
+bool IntroLayer::onContactBegin(PhysicsContact& contact){
+   
+    Node* circle = nullptr;
+    Node* star = nullptr;
+    Node* box = nullptr;
+    
+    if (contact.getShapeA()->getBody()->getNode()->getTag() == Circle::CIRCLE_TAG) {
+        circle = contact.getShapeA()->getBody()->getNode();
+    }else if (contact.getShapeA()->getBody()->getNode()->getTag() == StarPower::STAR_TAG) {
+        star = contact.getShapeA()->getBody()->getNode();
+    }else{
+        box = contact.getShapeA()->getBody()->getNode();
+    }
+    
+    if (contact.getShapeB()->getBody()->getNode()->getTag() == Circle::CIRCLE_TAG) {
+        circle = contact.getShapeB()->getBody()->getNode();
+    }else if (contact.getShapeB()->getBody()->getNode()->getTag() == StarPower::STAR_TAG) {
+        star = contact.getShapeB()->getBody()->getNode();
+    }else{
+        box = contact.getShapeB()->getBody()->getNode();
+    }
+    
+    if (circle && star) {
+        this->handleCircleStarCol(star);
+    }
+    
+    if (circle && box ) {
+        this->handleCircleBoxCol(box);
+    }
+    
+    return true;
+}
+
+void IntroLayer::handleCircleStarCol(Node * star){
+    circle->runStarPowerAnimation();
+    boxesIn.eraseObject(star);
+    star->removeFromParent();
+    moveCount = 0;
+}
+
+void IntroLayer::handleCircleBoxCol(Node * box){
+    
+    if (circle->isPowerActive) {
+        
+        box->removeFromParent();
+        boxesIn.eraseObject(box);
+        moveCount = 0;
+        
+    }else{
+        LivesLayer * livesl =  (LivesLayer *)this->getChildByTag(LIVE_LAYER);
+        livesl->decreaseLives();
+        circle->setColor(livesl->getCurrentColor());
+    }
 }
 
 void IntroLayer::buildCrossButton(){
@@ -77,10 +195,8 @@ void IntroLayer::buildCrossButton(){
         rect.size.width = rect.size.width*5;
         
         if (rect.containsPoint(point)) {
-            this->unscheduleUpdate();
-            delete this->spawner;
-            this->boxesIn.clear();
-            this->crossClicked();
+            this->endIntro();
+           
             return true;
         }
         
@@ -129,8 +245,11 @@ void IntroLayer::buildCircle(){
     circle->setPosition(this->getContentSize().width/2, this->getContentSize().height/2);
     circle->createPhysicsBody();
     circle->setColor( ((LivesLayer *)this->getChildByTag(LIVE_LAYER))->getCurrentColor() );
+    
     auto moveTo = MoveTo::create(.7, Vec2(circle->getBoundingBox().size.height, circle->getPosition().y));
     circle->runAction(moveTo);
+    
+    spawner->ballSize = circle->getBoundingBox().size;
     
     
     this->addChild(circle);
