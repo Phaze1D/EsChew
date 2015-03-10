@@ -14,9 +14,15 @@
 
 class StarPower: public cocos2d::Sprite  {
     
+public:
+    static const int STAR_TAG = 68;
     
 public:
+
+    static StarPower* createWithFile(const std::string& filename);
     
+    void createPhysicsBody();
+    void runAnimation();
 };
 
 #endif /* defined(__SQ__StarPower__) */
