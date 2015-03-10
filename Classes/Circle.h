@@ -14,11 +14,19 @@
 
 class Circle: public cocos2d::Sprite {
     
+public:
+    static const int CIRCLE_TAG = 64;
+    
+    bool isPowerActive = false;
     
 public:
    static Circle* createWithFile(const std::string& filename);
     
     void createPhysicsBody();
+    
+    void runStarPowerAnimation();
+    
+    void circleHitAnimation();
     
     
 };
