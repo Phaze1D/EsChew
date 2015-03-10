@@ -24,6 +24,8 @@ public:
     
     void createPhysicsBody(cocos2d::Size size);
     
+    void boxHitAnimation();
+    
 };
 
 #endif /* defined(__SQ__SquareBox__) */
