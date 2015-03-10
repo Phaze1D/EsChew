@@ -112,6 +112,7 @@ void IntroLayer::buildIntro(){
 }
 
 void IntroLayer::endIntro(){
+    this->unscheduleUpdate();
     delete this->spawner;
     circle->stopAllActions();
     this->stopAllActions();
