@@ -71,7 +71,7 @@ private:
     void resumesPhysics();
     
     void createCircleSwitchAni();
-    void createBoxExplo(Node* box);
+    void createBoxExplo(Node* box, bool isCircle);
     
     cocos2d::Vec2 getExploPoint(int i, cocos2d::Vec2 startPosition);
     

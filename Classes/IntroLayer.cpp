@@ -162,27 +162,40 @@ void IntroLayer::handleCircleBoxCol(Node * box){
     if (!circle->isPowerActive) {
         this->pausePhysics();
         this->createCircleSwitchAni();
+        this->createBoxExplo(circle, true);
+        box->getPhysicsBody()->setContactTestBitmask(false);
+        box->getPhysicsBody()->setCollisionBitmask(0);
+        box->getPhysicsBody()->setCategoryBitmask(0);
+    }else{
+        this->createBoxExplo(box, false);
+        box->removeFromParent();
+        boxesIn.eraseObject(box);
+        moveCount = 0;
+        
     }
-    
-    this->createBoxExplo(box);
-    
-    box->removeFromParent();
-    boxesIn.eraseObject(box);
-    moveCount = 0;
-    
     
     
 }
 
-void IntroLayer::createBoxExplo(cocos2d::Node *box){
+void IntroLayer::createBoxExplo(cocos2d::Node *box, bool isCircle){
     
     for (int i = 0; i < 8; i++) {
-        auto miniBox = Sprite::create();
-        miniBox->setTextureRect(Rect(0, 0, box->getBoundingBox().size.width/4, box->getBoundingBox().size.height/4));
+        Sprite* miniBox;
+        
+        if (isCircle) {
+            miniBox = Sprite::create("circle.png");
+            miniBox->setScale(circle->getScale()/6);
+            
+        }else{
+            miniBox = Sprite::create();
+            miniBox->setTextureRect(Rect(0, 0, box->getBoundingBox().size.width/4, box->getBoundingBox().size.height/4));
+        }
+        
+        
         miniBox->setColor(box->getColor());
         miniBox->setPosition(Vec2(box->getPosition().x, box->getPosition().y));
         
-        auto moveTo = MoveTo::create(.5, this->getExploPoint(i, box->getPosition()));
+        auto moveTo = MoveTo::create(.7, this->getExploPoint(i, box->getPosition()));
         
         auto end1 = CallFunc::create([&, miniBox](){
             miniBox->removeFromParent();
@@ -307,7 +320,7 @@ void IntroLayer::createCircleSwitchAni(){
     
     Vec2 post = livesl->getCurrentChildPostion();
     Color3B nextColor = livesl->getCurrentColor();
-    
+    circle->setVisible(false);
     int left = livesl->decreaseLives();
     
     if (left == 0) {
@@ -327,7 +340,9 @@ void IntroLayer::createCircleSwitchAni(){
     
     auto callBack = CallFunc::create([&,sprite, nextColor](){
         circle->setColor(nextColor);
+        circle->setVisible(true);
         sprite->removeFromParent();
+        
         
         this->resumesPhysics();
         
