@@ -35,16 +35,32 @@ void CountDownLayer::beginCountDown(){
 void CountDownLayer::update(float timeTook){
     
     
-    
     if ((int)timePassed == 0 && !didCreateOne) {
         createBoxes(threePosition);
         didCreateOne = true;
+        
+        for (int i = 0; i < threePosition.size(); i++) {
+            delete (threePosition[i]);
+        }
+        threePosition.clear();
+        
     }else if ((int)timePassed == 1 && !didCreateTwo){
         createBoxes(twoPosition);
         didCreateTwo = true;
+        
+        for (int i = 0; i < twoPosition.size(); i++) {
+            delete (twoPosition[i]);
+        }
+        twoPosition.clear();
     }else if((int)timePassed == 2 && !didCreateThree){
+        
         createBoxes(onePosition);
         didCreateThree = true;
+        
+        for (int i = 0; i < onePosition.size(); i++) {
+            delete (onePosition[i]);
+        }
+        onePosition.clear();
     }
     
     if ((int)timePassed >= 3) {
@@ -53,6 +69,7 @@ void CountDownLayer::update(float timeTook){
     }
     
     timePassed += timeTook;
+    
 
     
 }
@@ -126,7 +143,7 @@ Color3B CountDownLayer::getRandomBrightColor(){
 }
 
 
-void CountDownLayer::createBoxes(std::vector<cocos2d::Vec2> positionVec){
+void CountDownLayer::createBoxes(std::vector<Vec2*> positionVec){
     
     Vector<Node *> childern = this->getChildren();
     Color3B color = this->getRandomBrightColor();
@@ -135,7 +152,7 @@ void CountDownLayer::createBoxes(std::vector<cocos2d::Vec2> positionVec){
         
         if (i < childern.size()) {
             //Use exciting box
-            childern.at(i)->setPosition(positionVec[i]);
+            childern.at(i)->setPosition(*positionVec.at(i));
             childern.at(i)->setColor(color);
             
         }else{
@@ -143,7 +160,7 @@ void CountDownLayer::createBoxes(std::vector<cocos2d::Vec2> positionVec){
             box->setTextureRect(Rect(0, 0, boxSize.width, boxSize.height));
             box->setColor(color);
             box->setAnchorPoint(Vec2(0, 0));
-            box->setPosition(positionVec[i]);
+            box->setPosition(*positionVec.at(i));
             this->addChild(box);
         }
     }
@@ -238,17 +255,18 @@ std::vector<int> CountDownLayer::getBitmapNumber(int number){
 }
 
 
-std::vector<Vec2> CountDownLayer::calculatePosition(std::vector<int> array){
+std::vector<Vec2*> CountDownLayer::calculatePosition(std::vector<int> array){
     
-    std::vector<Vec2> vect;
-    vect.reserve(100);
-    
+    std::vector<Vec2*> vect;
+    vect.reserve(60);
     int row = 0;
     int column = 0;
     
     for (int i = 0; i < array.size(); i++) {
         if (array[i] == 0) {
-            vect.push_back(Vec2( (boxOffset + boxSize.width)*column, (boxOffset + boxSize.height)*row) );
+            Vec2* vec2 = new Vec2();
+            vec2->set((boxOffset + boxSize.width)*column, (boxOffset + boxSize.height)*row);
+            vect.push_back(vec2);
         }
         column++;
         if(array[i] == 2){

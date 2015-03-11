@@ -51,7 +51,7 @@ SquareBox* MySpawner::introSpawnBox(Size boxSize, Vec2 velocity){
 
 StarPower* MySpawner::spawnStar(Vec2 velocity){
     
-    StarPower * star = StarPower::createWithFile("starPower.png");
+    StarPower * star = StarPower::createWithFile("starPower2.png");
     this->scaleCorrectly(.15, star);
     star->createPhysicsBody();
     star->setPosition(this->getRandomIntroPosition());

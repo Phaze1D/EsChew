@@ -26,7 +26,7 @@ LivesLayer* LivesLayer::create(const cocos2d::Color4B &color){
 
 void LivesLayer::buildLives(float scale){
     
-    Color3B color = Color3B(255, 102, 0);
+    Color3B color = Color3B(255, 255, 255);
     
     Sprite* live1 = Sprite::create("circle.png");
     live1->setColor(color);
@@ -36,21 +36,16 @@ void LivesLayer::buildLives(float scale){
     this->scaleCorrectly(scale, live1);
     this->addChild(live1);
     
-   Color3B color2 = Color3B(255, 72, 0);
-    
-    
     Sprite* live2 = Sprite::create("circle.png");
-    live2->setColor(color2);
+    live2->setColor(color);
     live2->setTag(LIVE2_TAG);
     live2->setAnchorPoint(Vec2(0, 0));
     live2->setPosition(offset*2 + live1->getBoundingBox().size.width, offset);
     this->scaleCorrectly(scale, live2);
     this->addChild(live2);
     
-    Color3B color3 = Color3B(255, 42, 0);
-    
     Sprite* live3 = Sprite::create("circle.png");
-    live3->setColor(color3);
+    live3->setColor(color);
     live3->setAnchorPoint(Vec2(0, 0));
     live3->setTag(LIVE3_TAG);
     live3->setPosition(offset*3 +live1->getBoundingBox().size.width*2, offset);
@@ -60,15 +55,21 @@ void LivesLayer::buildLives(float scale){
     this->resize();
 }
 
-void LivesLayer::decreaseLives(){
-    if (this->getChildByTag(LIVE1_TAG)) {
+int LivesLayer::decreaseLives(){
+    livesLeft--;
+    
+    if (livesLeft == 3) {
         this->getChildByTag(LIVE1_TAG)->removeFromParent();
-        
-    }else if(this->getChildByTag(LIVE2_TAG)){
+        this->resize();
+    }else if(livesLeft == 2){
         this->getChildByTag(LIVE2_TAG)->removeFromParent();
-    }else if(this->getChildByTag(LIVE3_TAG)){
+        this->resize();
+    }else if(livesLeft == 1){
         this->getChildByTag(LIVE3_TAG)->removeFromParent();
+        this->resize();
     }
+    
+    return livesLeft;
 }
 
 Color3B LivesLayer::getCurrentColor(){
@@ -80,14 +81,30 @@ Color3B LivesLayer::getCurrentColor(){
     }else if(this->getChildByTag(LIVE3_TAG)){
         return this->getChildByTag(LIVE3_TAG)->getColor();
     }
+    
+    return Color3B(255, 255, 255);
+}
+
+Vec2 LivesLayer::getCurrentChildPostion(){
+    if (this->getChildByTag(LIVE1_TAG)) {
+        return this->getChildByTag(LIVE1_TAG)->getPosition();
+    }else if(this->getChildByTag(LIVE2_TAG)){
+        return this->getChildByTag(LIVE2_TAG)->getPosition();
+    }else if(this->getChildByTag(LIVE3_TAG)){
+        return this->getChildByTag(LIVE3_TAG)->getPosition();
+    }
+    return Vec2(0,0);
 }
 
 
 void LivesLayer::resize(){
     
-    float reWidth = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.width*this->getChildren().size() + offset*(this->getChildren().size()+1);
-    float reHeight = this->getChildByTag(LIVE1_TAG)->getBoundingBox().size.height + offset*2;
-    this->setContentSize(Size(reWidth, reHeight));
+    if (this->getChildren().size() >0) {
+        float reWidth = this->getChildren().at(0)->getBoundingBox().size.width*this->getChildren().size() + offset*(this->getChildren().size()+1);
+        float reHeight = this->getChildren().at(0)->getBoundingBox().size.height + offset*2;
+        this->setContentSize(Size(reWidth, reHeight));
+    }
+    
 }
 
 void LivesLayer::scaleCorrectly(float scale, Sprite * sprite){

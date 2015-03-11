@@ -15,9 +15,7 @@ void SquareBox::createPhysicsBody(Size size){
     phyBody->setDynamic(true);
     phyBody->setLinearDamping(0);
     phyBody->setContactTestBitmask(true);
+    phyBody->setAngularVelocity(random(0, 8));
     this->setPhysicsBody(phyBody);
 }
 
-void SquareBox::boxHitAnimation(){
-    
-}

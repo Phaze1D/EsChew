@@ -25,7 +25,7 @@ Circle* Circle::createWithFile(const std::string& filename){
 
 void Circle::createPhysicsBody(){
     
-    auto phyBody = PhysicsBody::createCircle(this->getBoundingBox().size.height/2);
+    auto phyBody = PhysicsBody::createCircle(this->getBoundingBox().size.height/2.2);
     phyBody->setDynamic(false);
     phyBody->setContactTestBitmask(true);
     this->setPhysicsBody(phyBody);

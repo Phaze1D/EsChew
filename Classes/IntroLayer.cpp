@@ -27,46 +27,42 @@ IntroLayer* IntroLayer::create(const cocos2d::Color4B &color){
 
 void IntroLayer::update(float timeTook){
     
-    //Spawn Box
-    if (timePassed >= defaultSpawnRate && !stopIntro) {
-        
-        if (spawnCount == 5) {
-            auto star = spawner->spawnStar(Vec2(481,0));
-            this->addChild(star);
-            timePassed = 0;
-            boxesIn.pushBack(star);
-            spawnCount++;
-            
-        }else{
-            auto box = spawner->introSpawnBox(Size(15, 15), Vec2(481,0));
-            this->addChild(box);
-            boxesIn.pushBack(box);
-            timePassed = 0;
-            spawnCount++;
-        }
-    }
-    
-    for (int i = 0; i < boxesIn.size(); i++) {
-        Node * front = boxesIn.at(i);
-        if ( (front->getPosition().x - front->getBoundingBox().size.width/2) <= 0 || front->getPosition().y <= 0 || front->getPosition().y >= this->getContentSize().height) {
-            front->removeFromParent();
-            boxesIn.eraseObject(front);
-            moveCount = 0;
-        }
-    }
-    
-    if (boxesIn.size() > 2) {
-        this->moveCircle();
-    }
-    
-    if (spawnCount >= 15) {
-        stopIntro = true;
-        if (boxesIn.size() == 0) {
-            this->endIntro();
-        }
-    }
+   
 
-    timePassed += timeTook;
+        //Spawn Box
+        if (timePassed >= defaultSpawnRate && !stopIntro) {
+            
+            if (spawnCount == 5) {
+                auto star = spawner->spawnStar(Vec2(481,0));
+                this->addChild(star);
+                timePassed = 0;
+                boxesIn.pushBack(star);
+                spawnCount++;
+                
+            }else{
+                auto box = spawner->introSpawnBox(Size(15, 15), Vec2(481,0));
+                this->addChild(box);
+                boxesIn.pushBack(box);
+                timePassed = 0;
+                spawnCount++;
+            }
+        }
+        
+        for (int i = 0; i < boxesIn.size(); i++) {
+            Node * front = boxesIn.at(i);
+            if ( (front->getPosition().x - front->getBoundingBox().size.width/2) <= 0 || front->getPosition().y <= 0 || front->getPosition().y >= this->getContentSize().height) {
+                front->removeFromParent();
+                boxesIn.eraseObject(front);
+                moveCount = 0;
+            }
+        }
+        
+        if (boxesIn.size() > 2) {
+            this->moveCircle();
+        }
+        
+        timePassed += timeTook;
+    
 }
 
 void IntroLayer::moveCircle(){
@@ -163,17 +159,184 @@ void IntroLayer::handleCircleStarCol(Node * star){
 
 void IntroLayer::handleCircleBoxCol(Node * box){
     
-    if (circle->isPowerActive) {
-        
-        box->removeFromParent();
-        boxesIn.eraseObject(box);
-        moveCount = 0;
-        
-    }else{
-        LivesLayer * livesl =  (LivesLayer *)this->getChildByTag(LIVE_LAYER);
-        livesl->decreaseLives();
-        circle->setColor(livesl->getCurrentColor());
+    if (!circle->isPowerActive) {
+        this->pausePhysics();
+        this->createCircleSwitchAni();
     }
+    
+    this->createBoxExplo(box);
+    
+    box->removeFromParent();
+    boxesIn.eraseObject(box);
+    moveCount = 0;
+    
+    
+    
+}
+
+void IntroLayer::createBoxExplo(cocos2d::Node *box){
+    
+    for (int i = 0; i < 8; i++) {
+        auto miniBox = Sprite::create();
+        miniBox->setTextureRect(Rect(0, 0, box->getBoundingBox().size.width/4, box->getBoundingBox().size.height/4));
+        miniBox->setColor(box->getColor());
+        miniBox->setPosition(Vec2(box->getPosition().x, box->getPosition().y));
+        
+        auto moveTo = MoveTo::create(.5, this->getExploPoint(i, box->getPosition()));
+        
+        auto end1 = CallFunc::create([&, miniBox](){
+            miniBox->removeFromParent();
+            
+        });
+        
+        auto end2 = CallFunc::create([&, miniBox](){
+            miniBox->removeFromParent();
+            if (noMoreLifes) {
+                this->endIntro();
+            }
+        });
+        
+        if (i == 7) {
+            auto seq = Sequence::createWithTwoActions(moveTo, end2);
+            miniBox->runAction(seq);
+        }else{
+            auto seq = Sequence::createWithTwoActions(moveTo, end1);
+            miniBox->runAction(seq);
+        }
+        
+        this->addChild(miniBox);
+    }
+}
+
+Vec2 IntroLayer::getExploPoint(int i, Vec2 startPosition){
+    float x = 0;
+    float y = 0;
+    
+    switch (i) {
+        case 0:
+            x = startPosition.x;
+            y = this->getBoundingBox().size.height;
+            break;
+            
+        case 1:
+            
+            x = this->getBoundingBox().size.width;
+            y = startPosition.y;
+            break;
+            
+        case 2:
+            
+            x = startPosition.x;
+            y = 0;
+            break;
+            
+        case 3:
+            x = 0;
+            y = startPosition.y;
+            break;
+            
+        case 4:
+            if (this->getBoundingBox().size.width - startPosition.x < this->getBoundingBox().size.height - startPosition.y ) {
+                x = this->getBoundingBox().size.width;
+                y = startPosition.y + this->getBoundingBox().size.width - startPosition.x;
+            }else{
+                x = startPosition.x + this->getBoundingBox().size.height - startPosition.y ;
+                y = this->getBoundingBox().size.height;
+            }
+            break;
+            
+        case 5:
+           
+            if (this->getBoundingBox().size.width - startPosition.x < startPosition.y ) {
+                x = this->getBoundingBox().size.width;
+                y = startPosition.y - (this->getBoundingBox().size.width - startPosition.x);
+            }else{
+                x = startPosition.x + startPosition.y;
+                y = 0;
+            }
+            
+            break;
+            
+        case 6:
+            if (startPosition.x < startPosition.y ) {
+                x = 0;
+                y = startPosition.y - startPosition.x;
+            }else{
+                x = startPosition.x - startPosition.y;
+                y = 0;
+            }
+            
+            break;
+            
+        case 7:
+           
+            if (startPosition.x < this->getBoundingBox().size.height - startPosition.y ) {
+                x = 0;
+                y = startPosition.y + startPosition.x;
+            }else{
+                x = startPosition.x - (this->getBoundingBox().size.height - startPosition.y);
+                y = this->getBoundingBox().size.height;
+            }
+            
+            break;
+    }
+    
+    return Vec2(x, y);
+    
+}
+
+void IntroLayer::pausePhysics(){
+    
+    this->unscheduleUpdate();
+    circle->stopAllActions();
+    
+    for (int i = 0; i < boxesIn.size(); i++) {
+        boxesIn.at(i)->getPhysicsBody()->setVelocity(Vec2(0, 0));
+    }
+}
+
+void IntroLayer::resumesPhysics(){
+    this->scheduleUpdate();
+    for (int i = 0; i < boxesIn.size(); i++) {
+        boxesIn.at(i)->getPhysicsBody()->setVelocity(Vec2(-481, 0));
+    }
+}
+
+void IntroLayer::createCircleSwitchAni(){
+    LivesLayer * livesl =  (LivesLayer *)this->getChildByTag(LIVE_LAYER);
+    
+    Vec2 post = livesl->getCurrentChildPostion();
+    Color3B nextColor = livesl->getCurrentColor();
+    
+    int left = livesl->decreaseLives();
+    
+    if (left == 0) {
+        noMoreLifes = true;
+        return;
+    }
+    
+    auto sprite = Sprite::create("circle.png");
+    this->scaleCorrectly(.15, sprite);
+    sprite->setPosition(Vec2(livesl->getPosition().x + post.x, livesl->getPosition().y + post.y));
+    sprite->setColor(nextColor);
+    
+    auto moveTo = MoveTo::create(1.5, Vec2(circle->getPosition().x, circle->getPosition().y));
+    auto scaleUp = ScaleTo::create(1.5, circle->getScale());
+    
+    auto spawn = Spawn::createWithTwoActions(moveTo, scaleUp);
+    
+    auto callBack = CallFunc::create([&,sprite, nextColor](){
+        circle->setColor(nextColor);
+        sprite->removeFromParent();
+        
+        this->resumesPhysics();
+        
+    });
+    
+    auto seq = Sequence::create(spawn,callBack, NULL);
+    
+    sprite->runAction(seq);
+    this->addChild(sprite);
 }
 
 void IntroLayer::buildCrossButton(){
@@ -218,7 +381,7 @@ void IntroLayer::buildCrossButton(){
 
 void IntroLayer::buildLives(){
     LivesLayer * liveLayer = LivesLayer::create(Color4B(255, 255, 255, 0));
-    liveLayer->buildLives(.15);
+    liveLayer->buildLives(.1);
     liveLayer->setPosition(Vec2(this->getContentSize().width - liveLayer->getContentSize().width, this->getContentSize().height - liveLayer->getContentSize().height));
     liveLayer->setTag(LIVE_LAYER);
     this->addChild(liveLayer);
@@ -245,7 +408,8 @@ void IntroLayer::buildCircle(){
     circle->setScale(.25);
     circle->setPosition(this->getContentSize().width/2, this->getContentSize().height/2);
     circle->createPhysicsBody();
-    circle->setColor( ((LivesLayer *)this->getChildByTag(LIVE_LAYER))->getCurrentColor() );
+    
+    circle->setColor( Color3B(255, 255, 255));
     
     auto moveTo = MoveTo::create(.7, Vec2(circle->getBoundingBox().size.height, circle->getPosition().y));
     circle->runAction(moveTo);

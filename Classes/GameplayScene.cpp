@@ -27,6 +27,7 @@ GameplayScene* GameplayScene::createWithPhysics(){
 void GameplayScene::buildScene(){
     this->getPhysicsWorld()->setGravity(Vec2(0, 0));
     
+    
     this->createBackground();
     
     //Player has not seen intro
@@ -45,11 +46,9 @@ void GameplayScene::createBackground(){
 void GameplayScene::createIntroLayer(){
     Size winSize = Director::getInstance()->getWinSize();
     
-    int r = random(0, 255);
-    int g = random(0, 255);
-    int b = random(0, 255);
-    
-    CCLOG("%d -- %d -- %d", r,g,b);
+//    int r = random(0, 255);
+//    int g = random(0, 255);
+//    int b = random(0, 255);
     
     //IntroLayer * intro = IntroLayer::create(Color4B(r, g, b, 50));
     IntroLayer * intro = IntroLayer::create(Color4B(148,0,211,50));
@@ -57,11 +56,11 @@ void GameplayScene::createIntroLayer(){
     intro->setPosition(winSize.width/2 - intro->getContentSize().width/2, winSize.height/2 - intro->getContentSize().height/2);
     intro->buildIntro();
     this->addChild(intro);
-    
-    
+  
     intro->crossClicked = [&, intro]{
         intro->removeAllChildren();
         intro->removeFromParent();
+        
         this->createCountDown();
     };
 }

@@ -24,7 +24,6 @@ public:
     
     void createPhysicsBody(cocos2d::Size size);
     
-    void boxHitAnimation();
     
 };
 

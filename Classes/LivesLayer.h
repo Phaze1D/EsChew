@@ -19,6 +19,8 @@ public:
     static const int LIVE2_TAG = 15;
     static const int LIVE3_TAG = 16;
     
+    int livesLeft = 4;
+    
 private:
     float offset = 6;
     
@@ -26,8 +28,11 @@ public:
     static LivesLayer* create(const cocos2d::Color4B &color);
     
     void buildLives(float scale);
-    void decreaseLives();
+    int decreaseLives();
+    
     cocos2d::Color3B getCurrentColor();
+    
+    cocos2d::Vec2 getCurrentChildPostion();
     
 private:
     //Only works with texture size of power of 2

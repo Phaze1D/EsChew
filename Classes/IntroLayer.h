@@ -35,6 +35,7 @@ private:
     
     bool movedCircle = false;
     bool stopIntro = false;
+    bool noMoreLifes = false;
     
     int moveCount = 0;
     int spawnCount = 0;
@@ -65,6 +66,16 @@ private:
     void scaleCorrectly(float scale, cocos2d::Sprite*sprite);
     void handleCircleStarCol(Node * star);
     void handleCircleBoxCol(Node * box);
+    
+    void pausePhysics();
+    void resumesPhysics();
+    
+    void createCircleSwitchAni();
+    void createBoxExplo(Node* box);
+    
+    cocos2d::Vec2 getExploPoint(int i, cocos2d::Vec2 startPosition);
+    
+    
     void endIntro();
     
     void addEvents();

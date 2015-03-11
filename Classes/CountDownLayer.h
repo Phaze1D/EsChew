@@ -13,6 +13,8 @@
 #include "cocos2d.h"
 #include <vector>
 
+USING_NS_CC;
+
 class CountDownLayer: public cocos2d:: LayerColor {
     
 private:
@@ -20,9 +22,9 @@ private:
     
     int boxOffset;
     
-    std::vector<cocos2d::Vec2> onePosition;
-    std::vector<cocos2d::Vec2> twoPosition;
-    std::vector<cocos2d::Vec2> threePosition;
+    std::vector<Vec2*> onePosition;
+    std::vector<Vec2*> twoPosition;
+    std::vector<Vec2*> threePosition;
     
     float timePassed;
     
@@ -31,7 +33,7 @@ private:
     bool didCreateThree = false;
     
 public:
-   static CountDownLayer* create(const cocos2d::Color4B &color);
+   static CountDownLayer* create(const Color4B &color);
     
     void beginCountDown();
     
@@ -46,16 +48,16 @@ private:
     
     void resize();
     
-    std::vector<cocos2d::Vec2> calculatePosition(std::vector<int> array);
+    std::vector<Vec2*> calculatePosition(std::vector<int> array);
     
-    void createBoxes(std::vector<cocos2d::Vec2> positionVec);
+    void createBoxes(std::vector<Vec2*> positionVec);
     
-    cocos2d::Color3B getRandomBrightColor();
+    Color3B getRandomBrightColor();
     
     void moveToOutter();
     
-    cocos2d::Vec2 getRandomOuterPosition();
-    
+    Vec2 getRandomOuterPosition();
+        
 };
 
 #endif /* defined(__SQ__CountDownLayer__) */
