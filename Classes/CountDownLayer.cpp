@@ -66,6 +66,7 @@ void CountDownLayer::update(float timeTook){
     if ((int)timePassed >= 3) {
         this->unscheduleUpdate();
         this->moveToOutter();
+        this->countFinishedCall();
     }
     
     timePassed += timeTook;

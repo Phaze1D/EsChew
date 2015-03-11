@@ -13,20 +13,20 @@
 #include "BackgroundLayer.h"
 #include "IntroLayer.h"
 #include "CountDownLayer.h"
+#include "GamePlayLayer.h"
 
 class GameplayScene: public cocos2d::Scene {
     
     
 public:
-
     static GameplayScene * createWithPhysics();
-    
     
 private:
     void buildScene();
     void createBackground();
     void createIntroLayer();
     void createCountDown();
+    void createGamePlayLayer();
     
     
 };

@@ -45,27 +45,19 @@ void GameplayScene::createBackground(){
 
 void GameplayScene::createIntroLayer(){
     Size winSize = Director::getInstance()->getWinSize();
-    
-//    int r = random(0, 255);
-//    int g = random(0, 255);
-//    int b = random(0, 255);
-    
-    //IntroLayer * intro = IntroLayer::create(Color4B(r, g, b, 50));
     IntroLayer * intro = IntroLayer::create(Color4B(148,0,211,50));
     intro->setContentSize(Size(winSize.width - 180, winSize.height - 150));
     intro->setPosition(winSize.width/2 - intro->getContentSize().width/2, winSize.height/2 - intro->getContentSize().height/2);
     intro->buildIntro();
     this->addChild(intro);
   
-    intro->crossClicked = [&, intro]{
+    intro->crossClicked = [&, intro](){
         intro->removeAllChildren();
         intro->removeFromParent();
         
         this->createCountDown();
     };
 }
-
-
 
 void GameplayScene::createCountDown(){
     
@@ -77,6 +69,20 @@ void GameplayScene::createCountDown(){
     countLayer->setPosition(winSize.width/2 - countLayer->getContentSize().width/2, winSize.height/2 - countLayer->getContentSize().height/2);
     countLayer->beginCountDown();
     this->addChild(countLayer);
+    
+    
+    countLayer->countFinishedCall = [&, countLayer](){
+        countLayer->removeAllChildren();
+        countLayer->removeFromParent();
+        this->createGamePlayLayer();
+    };
+}
+
+void GameplayScene::createGamePlayLayer(){
+    
+    GamePlayLayer * gameLayer = GamePlayLayer::create(Color4B(255, 255, 255, 0));
+    
+    
 }
 
 

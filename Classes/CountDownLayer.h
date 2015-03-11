@@ -43,6 +43,9 @@ public:
     
     void update(float) override;
     
+    typedef std::function<void()> countFinshCallBack;
+    countFinshCallBack countFinishedCall;
+    
 private:
     std::vector<int> getBitmapNumber(int number);
     

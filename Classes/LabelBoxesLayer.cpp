@@ -306,6 +306,7 @@ void LabelBoxesLayer::addEvents(){
     
     listener->onTouchMoved = [](Touch* touch, Event* event){
         // your code
+        
     };
     
    

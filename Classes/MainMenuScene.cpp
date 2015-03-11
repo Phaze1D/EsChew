@@ -84,6 +84,7 @@ void MainMenuScene::createRemoveAdsButton(){
     
     listener->onTouchMoved = [](Touch* touch, Event* event){
         // your code
+       
     };
     
     
