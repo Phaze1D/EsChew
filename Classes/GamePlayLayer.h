@@ -26,7 +26,9 @@ private:
 
     Circle* circle;
     
+    float gameTime = 0;
     
+    bool isPaused = false;
     
 public:
     
@@ -41,9 +43,13 @@ private:
     void createSpawners();
     void deleteSpawners();
     
+    bool onContactBegin(cocos2d::PhysicsContact& contact);
+    
     void addTouchHandlers();
     
     void createCircle();
+    
+    void spawnBall(float deltaTime);
     
 };
 

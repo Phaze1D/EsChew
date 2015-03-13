@@ -66,12 +66,10 @@ void CountDownLayer::update(float timeTook){
     if ((int)timePassed >= 3) {
         this->unscheduleUpdate();
         this->moveToOutter();
-        this->countFinishedCall();
+        
     }
     
     timePassed += timeTook;
-    
-
     
 }
 
@@ -80,7 +78,7 @@ void CountDownLayer::moveToOutter(){
     
     auto callBack = CallFunc::create([&](){
         this->removeAllChildren();
-      
+        this->countFinishedCall();
         
     });
     
@@ -93,6 +91,7 @@ void CountDownLayer::moveToOutter(){
         
         if (i == 0) {
             this->getChildren().at(i)->runAction(seq);
+            
         }else{
             this->getChildren().at(i)->runAction(move);
         }

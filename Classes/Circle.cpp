@@ -28,6 +28,7 @@ void Circle::createPhysicsBody(){
     auto phyBody = PhysicsBody::createCircle(this->getBoundingBox().size.height/2.2);
     phyBody->setDynamic(false);
     phyBody->setContactTestBitmask(true);
+   // phyBody->setVelocity(Vec2(200,0));
     this->setPhysicsBody(phyBody);
     
 }

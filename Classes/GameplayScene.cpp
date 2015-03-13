@@ -81,6 +81,7 @@ void GameplayScene::createCountDown(){
 void GameplayScene::createGamePlayLayer(){
     
     GamePlayLayer * gameLayer = GamePlayLayer::create(Color4B(255, 255, 255, 0));
+    this->addChild(gameLayer);
     
     
 }

@@ -14,25 +14,28 @@ void MySpawner::createSpawner(SpawnerPosition position, Rect sceneRect){
     this->position = position;
     
 }
-
-
-
-
-SquareBox* MySpawner::spawnBox(Size boxSize, Vec2 velocity){
+SquareBox* MySpawner::spawnBox(Size boxSize, float velocity){
     
-    SquareBox * box = SquareBox::create();
-    box->setTextureRect(Rect(0, 0,boxSize.width, boxSize.height));
-    box->setColor(this->createRandomBrightColor());
-    box->setPosition(this->getRandomPosition());
-    box->createPhysicsBody(boxSize);
-    this->getFinalVelocity(&velocity);
-    box->getPhysicsBody()->setVelocity(velocity);
+    if (timePassed >= spawnRate && spawnReady) {
+        
+        SquareBox * box = SquareBox::create();
+        box->setTextureRect(Rect(0, 0,boxSize.width, boxSize.height));
+        box->setColor(this->createRandomBrightColor());
+        box->setPosition(this->getRandomPosition());
+        box->createPhysicsBody(boxSize);
+        this->getFinalVelocity(velocity);
+        box->getPhysicsBody()->setVelocity(this->getFinalVelocity(velocity));
+        
+        timePassed = 0;
+        return box;
+    }
     
-    return box;
+    return nullptr;
+    
 }
 
 
-SquareBox* MySpawner::introSpawnBox(Size boxSize, Vec2 velocity){
+SquareBox* MySpawner::introSpawnBox(Size boxSize, float velocity){
     
     SquareBox * box = SquareBox::create();
     box->setTextureRect(Rect(0, 0,boxSize.width, boxSize.height));
@@ -43,20 +46,19 @@ SquareBox* MySpawner::introSpawnBox(Size boxSize, Vec2 velocity){
     
     box->createPhysicsBody(boxSize);
     
-    this->getFinalVelocity(&velocity);
-    box->getPhysicsBody()->setVelocity(velocity);
+    this->getFinalVelocity(velocity);
+    box->getPhysicsBody()->setVelocity(this->getFinalVelocity(velocity));
     
     return box;
 }
 
-StarPower* MySpawner::spawnStar(Vec2 velocity){
+StarPower* MySpawner::spawnStar(float velocity){
     
     StarPower * star = StarPower::createWithFile("starPower2.png");
     this->scaleCorrectly(.15, star);
     star->createPhysicsBody();
     star->setPosition(this->getRandomIntroPosition());
-    this->getFinalVelocity(&velocity);
-    star->getPhysicsBody()->setVelocity(velocity);
+    star->getPhysicsBody()->setVelocity(this->getFinalVelocity(velocity));
     star->runAnimation();
     
     return star;
@@ -84,24 +86,23 @@ Vec2 MySpawner::getRandomIntroPosition(){
 }
 
 
-
-
-
-
-void MySpawner::getFinalVelocity(cocos2d::Vec2 *velocity){
+Vec2 MySpawner::getFinalVelocity(float velocity){
+    
+    Vec2 vect;
     
     if (position == RIGHT) {
-        velocity->x = velocity->x * -1;
+        vect = Vec2(-1*velocity, 0);
         
     }else if (position == LEFT){
-        
+        vect = Vec2(velocity, 0);
         
     }else if(position == UPPER){
-        velocity->y = velocity->y * -1;
+        vect = Vec2(0,-1*velocity);
         
     }else if(position == LOWER){
-        
+        vect = Vec2(0,velocity);
     }
+    return vect;
 }
 
 Vec2 MySpawner::getRandomPosition(){
@@ -136,7 +137,7 @@ Color3B MySpawner::createRandomBrightColor(){
     
     int ave = (color.r + color.g + color.b)/3;
     
-    if (ave < 80) {
+    if (ave < 100) {
         int rannum = random(1, 3);
         if (rannum == 1) {
             color.r += 40;

@@ -26,6 +26,12 @@ class MySpawner {
 public:
     cocos2d::Size ballSize;
     
+    float timePassed = 0;
+    float spawnRate = 1;
+    
+    bool spawnReady = false;
+    
+    
 private:
     cocos2d::Rect sceneRect;
     SpawnerPosition position;
@@ -36,19 +42,19 @@ public:
     
     void createSpawner(SpawnerPosition position, cocos2d::Rect sceneRect);
     
-    SquareBox* spawnBox(cocos2d::Size boxSize, cocos2d::Vec2 velocity);
+    SquareBox* spawnBox(cocos2d::Size boxSize, float velocity);
     
-    SquareBox* introSpawnBox(cocos2d::Size boxSize, cocos2d::Vec2 velocity);
+    SquareBox* introSpawnBox(cocos2d::Size boxSize, float velocity);
     
-    StarPower * spawnStar(cocos2d::Vec2 velocity);
+    StarPower * spawnStar(float velocity);
   
 private:
     cocos2d::Color3B createRandomBrightColor();
     
     cocos2d::Vec2 getRandomPosition();
     cocos2d::Vec2 getRandomIntroPosition();
+    cocos2d::Vec2 getFinalVelocity(float velocity);
     
-    void getFinalVelocity(cocos2d::Vec2* velocity);
     void scaleCorrectly(float scale, cocos2d::Sprite * sprite);
     
 };

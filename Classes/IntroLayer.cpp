@@ -33,14 +33,14 @@ void IntroLayer::update(float timeTook){
         if (timePassed >= defaultSpawnRate && !stopIntro) {
             
             if (spawnCount == 5) {
-                auto star = spawner->spawnStar(Vec2(481,0));
+                auto star = spawner->spawnStar(481);
                 this->addChild(star);
                 timePassed = 0;
                 boxesIn.pushBack(star);
                 spawnCount++;
                 
             }else{
-                auto box = spawner->introSpawnBox(Size(15, 15), Vec2(481,0));
+                auto box = spawner->introSpawnBox(Size(15, 15), 481);
                 this->addChild(box);
                 boxesIn.pushBack(box);
                 timePassed = 0;
