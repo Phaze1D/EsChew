@@ -18,6 +18,7 @@ public:
     static const int LIVE1_TAG = 12;
     static const int LIVE2_TAG = 15;
     static const int LIVE3_TAG = 16;
+    static const int LIVE_LAYER = 21;
     
     int livesLeft = 4;
     

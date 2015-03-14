@@ -11,11 +11,14 @@
 
 #include <stdio.h>
 #include "cocos2d.h"
+#include "SquareBox.h"
 
 class Circle: public cocos2d::Sprite {
     
 public:
     static const int CIRCLE_TAG = 64;
+    static const int CIRCLE_CAT = 32;
+    
     
     bool isPowerActive = false;
     

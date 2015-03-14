@@ -16,7 +16,7 @@ LivesLayer* LivesLayer::create(const cocos2d::Color4B &color){
     if(layer && layer->initWithColor(color))
     {
         layer->autorelease();
-        
+        layer->setTag(LIVE_LAYER);
         return layer;
     }
     CC_SAFE_DELETE(layer);

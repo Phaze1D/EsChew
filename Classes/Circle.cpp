@@ -27,8 +27,28 @@ void Circle::createPhysicsBody(){
     
     auto phyBody = PhysicsBody::createCircle(this->getBoundingBox().size.height/2.2);
     phyBody->setDynamic(false);
+    
+    
+    auto shape = PhysicsShapeCircle::create(this->getBoundingBox().size.height/2.2);
+    shape->setCollisionBitmask(SquareBox::BOX_RIGHT);
+    phyBody->addShape(shape);
+    
+    auto shape1 = PhysicsShapeCircle::create(this->getBoundingBox().size.height/2.2);
+    shape1->setCollisionBitmask(SquareBox::BOX_LOWER);
+    phyBody->addShape(shape1);
+    
+    auto shape2 = PhysicsShapeCircle::create(this->getBoundingBox().size.height/2.2);
+    shape2->setCollisionBitmask(SquareBox::BOX_LEFT);
+    phyBody->addShape(shape2);
+    
+    auto shape3 = PhysicsShapeCircle::create(this->getBoundingBox().size.height/2.2);
+    shape3->setCollisionBitmask(SquareBox::BOX_UPPER);
+    phyBody->addShape(shape3);
+    
+    
     phyBody->setContactTestBitmask(true);
-   // phyBody->setVelocity(Vec2(200,0));
+    phyBody->setCategoryBitmask(true);
+    
     this->setPhysicsBody(phyBody);
     
 }

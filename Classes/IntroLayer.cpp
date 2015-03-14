@@ -27,7 +27,6 @@ IntroLayer* IntroLayer::create(const cocos2d::Color4B &color){
 
 void IntroLayer::update(float timeTook){
     
-   
 
         //Spawn Box
         if (timePassed >= defaultSpawnRate && !stopIntro) {
@@ -51,6 +50,7 @@ void IntroLayer::update(float timeTook){
         for (int i = 0; i < boxesIn.size(); i++) {
             Node * front = boxesIn.at(i);
             if ( (front->getPosition().x - front->getBoundingBox().size.width/2) <= 0 || front->getPosition().y <= 0 || front->getPosition().y >= this->getContentSize().height) {
+                
                 front->removeFromParent();
                 boxesIn.eraseObject(front);
                 moveCount = 0;
@@ -152,20 +152,24 @@ bool IntroLayer::onContactBegin(PhysicsContact& contact){
 
 void IntroLayer::handleCircleStarCol(Node * star){
     circle->runStarPowerAnimation();
+    star->getPhysicsBody()->setContactTestBitmask(false);
+    star->getPhysicsBody()->setCollisionBitmask(0);
+    star->getPhysicsBody()->setCategoryBitmask(0);
     boxesIn.eraseObject(star);
     star->removeFromParent();
     moveCount = 0;
 }
 
 void IntroLayer::handleCircleBoxCol(Node * box){
+    box->getPhysicsBody()->setContactTestBitmask(false);
+    box->getPhysicsBody()->setCollisionBitmask(0);
+    box->getPhysicsBody()->setCategoryBitmask(0);
     
     if (!circle->isPowerActive) {
         this->pausePhysics();
         this->createCircleSwitchAni();
         this->createBoxExplo(circle, true);
-        box->getPhysicsBody()->setContactTestBitmask(false);
-        box->getPhysicsBody()->setCollisionBitmask(0);
-        box->getPhysicsBody()->setCategoryBitmask(0);
+        
     }else{
         this->createBoxExplo(box, false);
         box->removeFromParent();
@@ -173,7 +177,6 @@ void IntroLayer::handleCircleBoxCol(Node * box){
         moveCount = 0;
         
     }
-    
     
 }
 
@@ -316,7 +319,7 @@ void IntroLayer::resumesPhysics(){
 }
 
 void IntroLayer::createCircleSwitchAni(){
-    LivesLayer * livesl =  (LivesLayer *)this->getChildByTag(LIVE_LAYER);
+    LivesLayer * livesl =  (LivesLayer *)this->getChildByTag(LivesLayer::LIVE_LAYER);
     
     Vec2 post = livesl->getCurrentChildPostion();
     Color3B nextColor = livesl->getCurrentColor();
@@ -398,7 +401,6 @@ void IntroLayer::buildLives(){
     LivesLayer * liveLayer = LivesLayer::create(Color4B(255, 255, 255, 0));
     liveLayer->buildLives(.1);
     liveLayer->setPosition(Vec2(this->getContentSize().width - liveLayer->getContentSize().width, this->getContentSize().height - liveLayer->getContentSize().height));
-    liveLayer->setTag(LIVE_LAYER);
     this->addChild(liveLayer);
     
     

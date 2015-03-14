@@ -31,8 +31,15 @@ void GamePlayLayer::update(float deltaTime){
     if (!isPaused) {
         
         this->spawnBall(deltaTime);
+        this->checkBoxIn();
+        
+        if (test == 10) {
+            this->spawnStar(deltaTime);
+        }
         
         gameTime += deltaTime;
+        
+        
     
         
     }
@@ -41,13 +48,43 @@ void GamePlayLayer::update(float deltaTime){
 void GamePlayLayer::spawnBall(float deltaTime){
     
     for (int i = 0; i < spawners.size(); i++) {
-        SquareBox * box = spawners.at(i)->spawnBox(Size(16, 16), 200);
+        SquareBox * box = spawners.at(i)->spawnBox(Size(16, 16), 400);
         
         if (box) {
+            box->retain();
             this->addChild(box);
+            nodesIn.push_back(box);
+            test++;
         }
         
         spawners.at(i)->timePassed+= deltaTime;
+    }
+}
+
+void GamePlayLayer::spawnStar(float deltaTime){
+    auto star = spawners[1]->spawnStar(400);
+    this->addChild(star);
+    test++;
+    
+}
+
+void GamePlayLayer::checkBoxIn(){
+    
+    for (auto it = nodesIn.cbegin(); it != nodesIn.cend(); it++) {
+        
+        if ((*it)->getReferenceCount() == 2) {
+            bool isInside = (*it)->getPosition().x < 0 || (*it)->getPosition().x > this->getContentSize().width || (*it)->getPosition().y < 0 || (*it)->getPosition().y > this->getContentSize().height;
+            
+            if (isInside){
+                (*it)->removeFromParent();
+                (*it)->release();
+                nodesIn.erase(it);
+            }
+        }else if( (*it)->getReferenceCount() == 1){
+            (*it)->release();
+            nodesIn.erase(it);
+        }
+        
     }
 }
 
@@ -78,25 +115,241 @@ bool GamePlayLayer::onContactBegin(cocos2d::PhysicsContact &contact){
 
     
     if (circle && box ) {
-        
-        box->removeFromParent();
+        this->handleCircleBoxCol(box);
+    }
+    
+    if (circle && star) {
+        this->handleCircleStarCol(star);
     }
     
     
     return true;
 }
 
+void GamePlayLayer::handleCircleBoxCol(Node* box){
+    
+    box->getPhysicsBody()->setContactTestBitmask(false);
+    box->getPhysicsBody()->setCollisionBitmask(0);
+    box->getPhysicsBody()->setCategoryBitmask(0);
+    
+    if (!circle->isPowerActive) {
+        this->pausePhysics();
+        this->createCircleSwitchAni();
+        this->createBoxExplo(circle, true);
+        
+    }else{
+        this->createBoxExplo(box, false);
+        box->removeFromParent();
+        
+    }
+
+}
+
+void GamePlayLayer::handleCircleStarCol(Node*star){
+    circle->runStarPowerAnimation();
+    star->getPhysicsBody()->setContactTestBitmask(false);
+    star->getPhysicsBody()->setCollisionBitmask(0);
+    star->getPhysicsBody()->setCategoryBitmask(0);
+    star->removeFromParent();
+}
+
+void GamePlayLayer::createBoxExplo(cocos2d::Node *box, bool isCircle){
+    
+    for (int i = 0; i < 8; i++) {
+        Sprite* miniBox;
+        
+        if (isCircle) {
+            miniBox = Sprite::create("circle.png");
+            miniBox->setScale(circle->getScale()/6);
+            
+        }else{
+            miniBox = Sprite::create();
+            miniBox->setTextureRect(Rect(0, 0, box->getBoundingBox().size.width/4, box->getBoundingBox().size.height/4));
+        }
+        
+        
+        miniBox->setColor(box->getColor());
+        miniBox->setPosition(Vec2(box->getPosition().x, box->getPosition().y));
+        
+        auto moveTo = MoveTo::create(.7, this->getExploPoint(i, box->getPosition()));
+        
+        auto end1 = CallFunc::create([&, miniBox](){
+            miniBox->removeFromParent();
+            
+        });
+        
+        auto end2 = CallFunc::create([&, miniBox](){
+            miniBox->removeFromParent();
+            if (noMoreLifes) {
+                
+            }
+        });
+        
+        if (i == 7) {
+            auto seq = Sequence::createWithTwoActions(moveTo, end2);
+            miniBox->runAction(seq);
+        }else{
+            auto seq = Sequence::createWithTwoActions(moveTo, end1);
+            miniBox->runAction(seq);
+        }
+        
+        this->addChild(miniBox);
+    }
+    
+}
+
+void GamePlayLayer::createCircleSwitchAni(){
+    LivesLayer * livesl =  (LivesLayer *)this->getChildByTag(LivesLayer::LIVE_LAYER);
+    
+    Vec2 post = livesl->getCurrentChildPostion();
+    Color3B nextColor = livesl->getCurrentColor();
+    circle->setVisible(false);
+    int left = livesl->decreaseLives();
+    
+    if (left == 0) {
+        noMoreLifes = true;
+        return;
+    }
+    
+    auto sprite = Sprite::create("circle.png");
+    this->scaleCorrectly(.15, sprite);
+    sprite->setPosition(Vec2(livesl->getPosition().x + post.x, livesl->getPosition().y + post.y));
+    sprite->setColor(nextColor);
+    
+    auto moveTo = MoveTo::create(1.5, Vec2(circle->getPosition().x, circle->getPosition().y));
+    auto scaleUp = ScaleTo::create(1.5, circle->getScale());
+    
+    auto spawn = Spawn::createWithTwoActions(moveTo, scaleUp);
+    
+    auto callBack = CallFunc::create([&,sprite, nextColor](){
+        circle->setColor(nextColor);
+        circle->setVisible(true);
+        sprite->removeFromParent();
+        
+        
+        this->resumePhysics();
+        
+    });
+    
+    auto seq = Sequence::create(spawn,callBack, NULL);
+    
+    sprite->runAction(seq);
+    this->addChild(sprite);
+}
+
+
+void GamePlayLayer::pausePhysics(){
+    
+    this->unscheduleUpdate();
+    circle->stopAllActions();
+    
+    for (auto it = nodesIn.cbegin(); it != nodesIn.cend(); it++) {
+       (*it)->pausePhysics();
+    }
+}
+
+void GamePlayLayer::resumePhysics(){
+    this->scheduleUpdate();
+    for (auto it = nodesIn.cbegin(); it != nodesIn.cend(); it++) {
+        (*it)->resumePhysics();
+    }
+}
+
+Vec2 GamePlayLayer::getExploPoint(int i, Vec2 startPosition){
+    float x = 0;
+    float y = 0;
+    
+    switch (i) {
+        case 0:
+            x = startPosition.x;
+            y = this->getBoundingBox().size.height;
+            break;
+            
+        case 1:
+            
+            x = this->getBoundingBox().size.width;
+            y = startPosition.y;
+            break;
+            
+        case 2:
+            
+            x = startPosition.x;
+            y = 0;
+            break;
+            
+        case 3:
+            x = 0;
+            y = startPosition.y;
+            break;
+            
+        case 4:
+            if (this->getBoundingBox().size.width - startPosition.x < this->getBoundingBox().size.height - startPosition.y ) {
+                x = this->getBoundingBox().size.width;
+                y = startPosition.y + this->getBoundingBox().size.width - startPosition.x;
+            }else{
+                x = startPosition.x + this->getBoundingBox().size.height - startPosition.y ;
+                y = this->getBoundingBox().size.height;
+            }
+            break;
+            
+        case 5:
+            
+            if (this->getBoundingBox().size.width - startPosition.x < startPosition.y ) {
+                x = this->getBoundingBox().size.width;
+                y = startPosition.y - (this->getBoundingBox().size.width - startPosition.x);
+            }else{
+                x = startPosition.x + startPosition.y;
+                y = 0;
+            }
+            
+            break;
+            
+        case 6:
+            if (startPosition.x < startPosition.y ) {
+                x = 0;
+                y = startPosition.y - startPosition.x;
+            }else{
+                x = startPosition.x - startPosition.y;
+                y = 0;
+            }
+            
+            break;
+            
+        case 7:
+            
+            if (startPosition.x < this->getBoundingBox().size.height - startPosition.y ) {
+                x = 0;
+                y = startPosition.y + startPosition.x;
+            }else{
+                x = startPosition.x - (this->getBoundingBox().size.height - startPosition.y);
+                y = this->getBoundingBox().size.height;
+            }
+            
+            break;
+    }
+    
+    return Vec2(x, y);
+    
+}
+
+
 
 void GamePlayLayer::buildGameLayer(){
     this->createSpawners();
     this->createCircle();
+    this->createLivesLayer();
     this->addTouchHandlers();
-    
-   
     
     
     this->scheduleUpdate();
     
+}
+
+void GamePlayLayer::createLivesLayer(){
+    LivesLayer * liveLayer = LivesLayer::create(Color4B(255, 255, 255, 0));
+    liveLayer->buildLives(.15);
+    liveLayer->setPosition(Vec2(this->getContentSize().width - liveLayer->getContentSize().width, this->getContentSize().height - liveLayer->getContentSize().height));
+    this->addChild(liveLayer);
 }
 
 void GamePlayLayer::createSpawners(){
@@ -104,24 +357,26 @@ void GamePlayLayer::createSpawners(){
     
     MySpawner * spawner1 = new MySpawner();
     spawner1->createSpawner(UPPER, this->getBoundingBox());
-    spawner1->spawnRate = 1/2.0;
-    spawner1->spawnReady = false;
+    spawner1->spawnRate = 1/1;
+   // spawner1->spawnReady = true;
     spawners.push_back(spawner1);
     
     MySpawner * spawner2 = new MySpawner();
     spawner2->createSpawner(RIGHT, this->getBoundingBox());
-    spawner2->spawnRate = 1/20.0;
+    spawner2->spawnRate = 1/1;
     spawner2->spawnReady = true;
     spawners.push_back(spawner2);
     
     MySpawner * spawner3 = new MySpawner();
     spawner3->createSpawner(LOWER, this->getBoundingBox());
-    spawner3->spawnRate = 1/2.0;
+    spawner3->spawnRate = 1/1;
+   // spawner3->spawnReady = true;
     spawners.push_back(spawner3);
     
     MySpawner * spawner4 = new MySpawner();
     spawner4->createSpawner(LEFT, this->getBoundingBox());
-    spawner4->spawnRate = 1/2.0;
+    spawner4->spawnRate = 1/1;
+    //spawner4->spawnReady = true;
     spawners.push_back(spawner4);
 }
 
@@ -145,6 +400,21 @@ void GamePlayLayer::createCircle(){
     
     this->addChild(circle);
     
+}
+
+void GamePlayLayer::deleteNodesIn(){
+    
+    for (auto it = nodesIn.cbegin(); it != nodesIn.cend(); it++) {
+        (*it)->release();
+    }
+    nodesIn.clear();
+}
+
+void GamePlayLayer::scaleCorrectly(float scale, Sprite * sprite){
+    sprite->getTexture()->generateMipmap();
+    cocos2d::Texture2D::TexParams texpar = {GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE};
+    sprite->getTexture()->setTexParameters(texpar);
+    sprite->setScale(scale);
 }
 
 void GamePlayLayer::addTouchHandlers(){

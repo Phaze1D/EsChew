@@ -14,12 +14,10 @@
 #include "Circle.h"
 #include "LivesLayer.h"
 #include "SquareBox.h"
+#include "StarPower.h"
 
 
 class IntroLayer: public cocos2d::LayerColor {
-    
-public:
-    static const int LIVE_LAYER = 101;
     
 private:
     MySpawner * spawner;

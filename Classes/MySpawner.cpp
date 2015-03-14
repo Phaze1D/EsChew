@@ -24,7 +24,10 @@ SquareBox* MySpawner::spawnBox(Size boxSize, float velocity){
         box->setPosition(this->getRandomPosition());
         box->createPhysicsBody(boxSize);
         this->getFinalVelocity(velocity);
-        box->getPhysicsBody()->setVelocity(this->getFinalVelocity(velocity));
+        box->velocity = this->getFinalVelocity(velocity);
+        box->getPhysicsBody()->setVelocity(box->velocity);
+        box->getPhysicsBody()->setCategoryBitmask(true);
+        box->getPhysicsBody()->setCollisionBitmask(this->getBoxCat());
         
         timePassed = 0;
         return box;
@@ -34,6 +37,27 @@ SquareBox* MySpawner::spawnBox(Size boxSize, float velocity){
     
 }
 
+int MySpawner::getBoxCat(){
+    
+    if (this->position == RIGHT) {
+        return SquareBox::BOX_RIGHT;
+    }
+    
+    if (this->position == LEFT) {
+        return SquareBox::BOX_LEFT;
+    }
+    
+    if (this->position == UPPER) {
+        return SquareBox::BOX_UPPER;
+    }
+    
+    if (this->position == LOWER) {
+        return SquareBox::BOX_LOWER;
+    }
+    
+    return 0;
+    
+}
 
 SquareBox* MySpawner::introSpawnBox(Size boxSize, float velocity){
     
@@ -43,10 +67,7 @@ SquareBox* MySpawner::introSpawnBox(Size boxSize, float velocity){
     
     box->setPosition(this->getRandomIntroPosition());
     passIntroY = box->getPosition().y;
-    
     box->createPhysicsBody(boxSize);
-    
-    this->getFinalVelocity(velocity);
     box->getPhysicsBody()->setVelocity(this->getFinalVelocity(velocity));
     
     return box;
@@ -56,8 +77,8 @@ StarPower* MySpawner::spawnStar(float velocity){
     
     StarPower * star = StarPower::createWithFile("starPower2.png");
     this->scaleCorrectly(.15, star);
+    star->setPosition(this->getRandomPosition());
     star->createPhysicsBody();
-    star->setPosition(this->getRandomIntroPosition());
     star->getPhysicsBody()->setVelocity(this->getFinalVelocity(velocity));
     star->runAnimation();
     
@@ -137,14 +158,14 @@ Color3B MySpawner::createRandomBrightColor(){
     
     int ave = (color.r + color.g + color.b)/3;
     
-    if (ave < 100) {
+    if (ave < 150) {
         int rannum = random(1, 3);
         if (rannum == 1) {
-            color.r += 40;
+            color.r += 10;
         }else if(rannum == 2){
-            color.g += 40;
+            color.g += 10;
         }else{
-            color.b += 40;
+            color.b += 10;
         }
     }
     return color;

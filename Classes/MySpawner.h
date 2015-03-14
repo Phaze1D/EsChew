@@ -57,6 +57,8 @@ private:
     
     void scaleCorrectly(float scale, cocos2d::Sprite * sprite);
     
+    int getBoxCat();
+    
 };
 
 

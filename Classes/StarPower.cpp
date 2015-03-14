@@ -30,8 +30,11 @@ void StarPower::createPhysicsBody(){
     auto phyBody = PhysicsBody::createBox(this->getBoundingBox().size);
     phyBody->setDynamic(true);
     phyBody->setContactTestBitmask(true);
+    phyBody->setCategoryBitmask(true);
     phyBody->setAngularVelocity(8);
     this->setPhysicsBody(phyBody);
+    
+    CCLOG("%p", this->getPhysicsBody()->getNode());
     
 }
 
