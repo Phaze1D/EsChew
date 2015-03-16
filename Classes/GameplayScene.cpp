@@ -81,8 +81,19 @@ void GameplayScene::createCountDown(){
 void GameplayScene::createGamePlayLayer(){
     
     GamePlayLayer * gameLayer = GamePlayLayer::create(Color4B(255, 255, 255, 0));
+    
+    gameLayer->gameOverCall = [&,gameLayer](int score, int highScore){
+        gameLayer->removeFromParent();
+        this->createGameOverLayer(score, highScore);
+        
+    };
+    
     this->addChild(gameLayer);
     
+    
+}
+
+void GameplayScene::createGameOverLayer(int score, int highScore){
     
 }
 

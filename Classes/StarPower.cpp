@@ -33,9 +33,7 @@ void StarPower::createPhysicsBody(){
     phyBody->setCategoryBitmask(true);
     phyBody->setAngularVelocity(8);
     this->setPhysicsBody(phyBody);
-    
-    CCLOG("%p", this->getPhysicsBody()->getNode());
-    
+        
 }
 
 void StarPower::runAnimation(){

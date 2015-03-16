@@ -13,8 +13,27 @@
 
 class GameStageController {
     
+private:
+    float gameTime = 0;
+    float gameScore = 0;
+    float highScore = 10;
+    
+    int next = 1;
+    
+    bool newRecordReached = false;
     
 public:
+    
+    int increaseScore();
+    int increaseScoreByHit();
+    
+    int getGameScore();
+    int getHighScore();
+    
+    void increaseGameTime(float amount);
+    
+    bool recordReached();
+    
     
 };
 

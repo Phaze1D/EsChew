@@ -29,13 +29,20 @@ private:
 
     Circle* circle;
     
-    float gameTime = 0;
-    
     bool isPaused = false;
     bool noMoreLifes = false;
+    bool isSwitching = false;
     
     int test = 0;
+    
+    cocos2d::Label* pointsLabel;
+    
+    GameStageController * gameCon;
+    
 public:
+    
+    typedef std::function<void(int score, int highScore)> gameOverCallBack;
+    gameOverCallBack gameOverCall;
     
     static GamePlayLayer* create(const cocos2d::Color4B &color);
     
@@ -55,14 +62,16 @@ private:
     void deleteNodesIn();
     
     void createLivesLayer();
-    
     void createCircle();
+    void createPointLabel();
     
     void handleCircleBoxCol(cocos2d::Node*box);
     void handleCircleStarCol(cocos2d::Node*star);
     
     void spawnBall(float deltaTime);
     void spawnStar(float deltaTime);
+    
+    void updatePointsLabel(int amount);
     void checkBoxIn();
     
     void createBoxExplo(cocos2d::Node* box, bool isCircle);
@@ -71,9 +80,15 @@ private:
     void resumePhysics();
     void createCircleSwitchAni();
     
+    void createNewRecordAni();
+    
     void scaleCorrectly(float scale, cocos2d::Sprite * sprite);
     
+    void updateSpawnRate();
+    
     cocos2d::Vec2 getExploPoint(int i, cocos2d::Vec2 startPosition);
+    
+    void deleteAll();
     
 };
 

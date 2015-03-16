@@ -37,10 +37,13 @@ void GamePlayLayer::update(float deltaTime){
             this->spawnStar(deltaTime);
         }
         
-        gameTime += deltaTime;
+        gameCon->increaseGameTime(deltaTime);
         
+        this->updatePointsLabel(gameCon->increaseScore());
         
-    
+        if (gameCon->recordReached()) {
+            this->createNewRecordAni();
+        }
         
     }
 }
@@ -48,7 +51,7 @@ void GamePlayLayer::update(float deltaTime){
 void GamePlayLayer::spawnBall(float deltaTime){
     
     for (int i = 0; i < spawners.size(); i++) {
-        SquareBox * box = spawners.at(i)->spawnBox(Size(16, 16), 400);
+        SquareBox * box = spawners.at(i)->spawnBox(Size(16, 16), 2000);
         
         if (box) {
             box->retain();
@@ -62,10 +65,18 @@ void GamePlayLayer::spawnBall(float deltaTime){
 }
 
 void GamePlayLayer::spawnStar(float deltaTime){
-    auto star = spawners[1]->spawnStar(400);
+    auto star = spawners[random(0, 3)]->spawnStar(400);
     this->addChild(star);
     test++;
     
+}
+
+void GamePlayLayer::updatePointsLabel(int amount){
+    
+    if (amount > 0) {
+        pointsLabel->setString(std::to_string(amount));
+    }
+
 }
 
 void GamePlayLayer::checkBoxIn(){
@@ -133,11 +144,13 @@ void GamePlayLayer::handleCircleBoxCol(Node* box){
     box->getPhysicsBody()->setCategoryBitmask(0);
     
     if (!circle->isPowerActive) {
+        isSwitching = true;
         this->pausePhysics();
         this->createCircleSwitchAni();
         this->createBoxExplo(circle, true);
         
     }else{
+        this->updatePointsLabel(gameCon->increaseScoreByHit());
         this->createBoxExplo(box, false);
         box->removeFromParent();
         
@@ -158,6 +171,8 @@ void GamePlayLayer::createBoxExplo(cocos2d::Node *box, bool isCircle){
     for (int i = 0; i < 8; i++) {
         Sprite* miniBox;
         
+        
+        
         if (isCircle) {
             miniBox = Sprite::create("circle.png");
             miniBox->setScale(circle->getScale()/6);
@@ -165,6 +180,18 @@ void GamePlayLayer::createBoxExplo(cocos2d::Node *box, bool isCircle){
         }else{
             miniBox = Sprite::create();
             miniBox->setTextureRect(Rect(0, 0, box->getBoundingBox().size.width/4, box->getBoundingBox().size.height/4));
+            
+            Label * plus5 = Label::createWithTTF("+5", "fonts/arial.ttf", 28);
+            plus5->setPosition(box->getPosition().x, box->getPosition().y);
+            plus5->setColor(box->getColor());
+            auto scaleUp = ScaleTo::create(.7, 2);
+            
+            auto callBac = CallFunc::create([plus5](){
+                plus5->removeFromParent();
+            });
+            
+            plus5->runAction(Sequence::createWithTwoActions(scaleUp, callBac));
+            this->addChild(plus5);
         }
         
         
@@ -181,7 +208,8 @@ void GamePlayLayer::createBoxExplo(cocos2d::Node *box, bool isCircle){
         auto end2 = CallFunc::create([&, miniBox](){
             miniBox->removeFromParent();
             if (noMoreLifes) {
-                
+                this->deleteAll();
+                this->gameOverCall(this->gameCon->getGameScore(), this->gameCon->getHighScore());
             }
         });
         
@@ -225,8 +253,7 @@ void GamePlayLayer::createCircleSwitchAni(){
         circle->setColor(nextColor);
         circle->setVisible(true);
         sprite->removeFromParent();
-        
-        
+        isSwitching = false;
         this->resumePhysics();
         
     });
@@ -237,6 +264,9 @@ void GamePlayLayer::createCircleSwitchAni(){
     this->addChild(sprite);
 }
 
+void GamePlayLayer::createNewRecordAni(){
+    
+}
 
 void GamePlayLayer::pausePhysics(){
     
@@ -335,9 +365,13 @@ Vec2 GamePlayLayer::getExploPoint(int i, Vec2 startPosition){
 
 
 void GamePlayLayer::buildGameLayer(){
+    
+    gameCon = new GameStageController();
+    
     this->createSpawners();
     this->createCircle();
     this->createLivesLayer();
+    this->createPointLabel();
     this->addTouchHandlers();
     
     
@@ -358,19 +392,19 @@ void GamePlayLayer::createSpawners(){
     MySpawner * spawner1 = new MySpawner();
     spawner1->createSpawner(UPPER, this->getBoundingBox());
     spawner1->spawnRate = 1/1;
-   // spawner1->spawnReady = true;
+    //spawner1->spawnReady = true;
     spawners.push_back(spawner1);
     
     MySpawner * spawner2 = new MySpawner();
     spawner2->createSpawner(RIGHT, this->getBoundingBox());
-    spawner2->spawnRate = 1/1;
+    spawner2->spawnRate = 1/5.0;
     spawner2->spawnReady = true;
     spawners.push_back(spawner2);
     
     MySpawner * spawner3 = new MySpawner();
     spawner3->createSpawner(LOWER, this->getBoundingBox());
     spawner3->spawnRate = 1/1;
-   // spawner3->spawnReady = true;
+    //spawner3->spawnReady = true;
     spawners.push_back(spawner3);
     
     MySpawner * spawner4 = new MySpawner();
@@ -378,6 +412,20 @@ void GamePlayLayer::createSpawners(){
     spawner4->spawnRate = 1/1;
     //spawner4->spawnReady = true;
     spawners.push_back(spawner4);
+}
+
+void GamePlayLayer::createPointLabel(){
+    
+    Vec2 liveLayerP = this->getChildByTag(LivesLayer::LIVE_LAYER)->getPosition();
+    
+    pointsLabel = Label::createWithTTF(" 0", "fonts/Titillium-Light.otf", 43);
+    pointsLabel->setColor(Color3B::WHITE);
+    pointsLabel->setAnchorPoint(Vec2(0.5, 0.5));
+    pointsLabel->setHorizontalAlignment(TextHAlignment::CENTER);
+    pointsLabel->setPosition(this->getContentSize().width/2, this->getContentSize().height - pointsLabel->getContentSize().height);
+    this->addChild(pointsLabel);
+    
+    
 }
 
 void GamePlayLayer::deleteSpawners(){
@@ -405,9 +453,19 @@ void GamePlayLayer::createCircle(){
 void GamePlayLayer::deleteNodesIn(){
     
     for (auto it = nodesIn.cbegin(); it != nodesIn.cend(); it++) {
-        (*it)->release();
+        if ( (*it) -> getReferenceCount() > 1) {
+            (*it)->release();
+        }
     }
     nodesIn.clear();
+    
+    delete gameCon;
+}
+
+void GamePlayLayer::deleteAll(){
+    this->deleteNodesIn();
+    this->deleteSpawners();
+    this->removeAllChildren();
 }
 
 void GamePlayLayer::scaleCorrectly(float scale, Sprite * sprite){
@@ -424,13 +482,17 @@ void GamePlayLayer::addTouchHandlers(){
     
     listener->onTouchBegan = [&](Touch* touch, Event* event){
         
-        circle->setPosition(touch->getLocation());
+        if (!isSwitching) {
+            circle->setPosition(touch->getLocation());
+        }
         return true;
     };
     
     listener->onTouchMoved = [&](Touch* touch, Event* event){
        
-        circle->setPosition(touch->getLocation());
+        if (!isSwitching) {
+            circle->setPosition(touch->getLocation());
+        }
         
     };
     

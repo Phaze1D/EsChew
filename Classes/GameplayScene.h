@@ -27,6 +27,7 @@ private:
     void createIntroLayer();
     void createCountDown();
     void createGamePlayLayer();
+    void createGameOverLayer(int score, int highScore);
     
     
 };
