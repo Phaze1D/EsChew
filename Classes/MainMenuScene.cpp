@@ -100,4 +100,5 @@ void MainMenuScene::createRemoveAdsButton(){
 
 void MainMenuScene::clearDelete(){
     labelLayer = nullptr;
+    this->onExit();
 }

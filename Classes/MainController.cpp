@@ -49,23 +49,40 @@ void MainController::end(){
 }
 
 void MainController::createMainMenuScene(){
-    mainMenuScene = MainMenuScene::create();
+    
+    
+    auto mainMenuScene = MainMenuScene::create();
     Director* director = Director::getInstance();
-    director->runWithScene(mainMenuScene);
+    
+    if (director->getRunningScene()) {
+        director->replaceScene(mainMenuScene);
+        
+    }else{
+        director->runWithScene(mainMenuScene);
+        
+    }
     
     
-    mainMenuScene->labelLayer->playClicked = [&](){
+    mainMenuScene->labelLayer->playClicked = [&, mainMenuScene](){
         mainMenuScene->removeAllChildren();
         this->createGameplayScene();
+        
     };
-                                              
+    
     
 }
 
 void MainController::createGameplayScene(){
     
-    gameplayScene = GameplayScene::createWithPhysics();
+    auto gameplayScene = GameplayScene::createWithPhysics();
     Director::getInstance()->replaceScene(gameplayScene);
+    
+    
+    gameplayScene->homeClick = [&, gameplayScene](){
+        gameplayScene->removeAllChildren();
+        this->createMainMenuScene();
+       
+    };
     
     
     

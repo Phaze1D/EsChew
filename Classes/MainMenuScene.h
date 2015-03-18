@@ -25,6 +25,8 @@ public:
     //Initializes the Scene -- Write code in here ---
     virtual bool init();
     
+    
+    
     //Creates the create() function
     CREATE_FUNC(MainMenuScene);
     

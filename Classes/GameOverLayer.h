@@ -26,11 +26,19 @@ public:
     CREATE_FUNC(GameOverLayer);
     void buildLayer(int score,int highScore);
     
+    typedef std::function<void()> HomeCallBack;
+    HomeCallBack homeClicked;
+    
+    typedef std::function<void()> RestartCallBack;
+    RestartCallBack restartClicked;
+    
 private:
     void createResetButton();
     void createHomeButton();
     void createHighScore();
     void createScore();
+    
+    void scaleCorrectly(float scale, cocos2d::Sprite*sprite);
     
     void addEvents();
     

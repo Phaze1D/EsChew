@@ -226,7 +226,7 @@ void LabelBoxesLayer::resizeLayer(){
 void LabelBoxesLayer::moveBoxesToFinal(){
     
     
-    auto move = MoveTo::create(3, finalPositions.at(0));
+    auto move = MoveTo::create(2, finalPositions.at(0));
     
     auto callBack = CallFunc::create([&](){
         this->addRemoveAdL();
@@ -237,7 +237,7 @@ void LabelBoxesLayer::moveBoxesToFinal(){
     auto seq = Sequence::create(move, callBack, NULL);
     
     for (int i = 0; i < finalPositions.size(); i++) {
-        auto move = MoveTo::create(3, finalPositions.at(i));
+        auto move = MoveTo::create(2, finalPositions.at(i));
         
         if (i == 0) {
             this->getChildren().at(i)->runAction(seq);
@@ -252,7 +252,7 @@ void LabelBoxesLayer::moveBoxesToFinal(){
 
 void LabelBoxesLayer::moveBoxesOut(){
     
-    auto move = MoveTo::create(2, this->getRandomOuterPosition());
+    auto move = MoveTo::create(2.5, this->getRandomOuterPosition());
     
     auto callBack = CallFunc::create([&](){
         this->removeAllChildren();
@@ -263,7 +263,7 @@ void LabelBoxesLayer::moveBoxesOut(){
     auto seq = Sequence::create(move, callBack, NULL);
     
     for (int i = 0; i < this->getChildren().size(); i++) {
-        auto move = MoveTo::create(3, this->getRandomOuterPosition());
+        auto move = MoveTo::create(2, this->getRandomOuterPosition());
         
         //this->getChildren().at(i)->setColor(this->getRandomBrightColor());
         

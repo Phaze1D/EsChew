@@ -14,12 +14,16 @@
 #include "IntroLayer.h"
 #include "CountDownLayer.h"
 #include "GamePlayLayer.h"
+#include "GameOverLayer.h"
 
 class GameplayScene: public cocos2d::Scene {
     
     
 public:
     static GameplayScene * createWithPhysics();
+   
+    typedef std::function<void()> HomeCallBack;
+    HomeCallBack homeClick;
     
 private:
     void buildScene();
@@ -28,6 +32,8 @@ private:
     void createCountDown();
     void createGamePlayLayer();
     void createGameOverLayer(int score, int highScore);
+    
+    
     
     
 };

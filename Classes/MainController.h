@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 #include "MainMenuScene.h"
 #include "GameplayScene.h"
+#include "HelloWorldScene.h"
 
 class MainController{
     
@@ -38,8 +39,6 @@ public:
 
     
 private:
-    MainMenuScene * mainMenuScene;
-    GameplayScene * gameplayScene;
     
 };
 

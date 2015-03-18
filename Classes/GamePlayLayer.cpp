@@ -51,7 +51,7 @@ void GamePlayLayer::update(float deltaTime){
 void GamePlayLayer::spawnBall(float deltaTime){
     
     for (int i = 0; i < spawners.size(); i++) {
-        SquareBox * box = spawners.at(i)->spawnBox(Size(16, 16), 2000);
+        SquareBox * box = spawners.at(i)->spawnBox(Size(16, 16), 200);
         
         if (box) {
             box->retain();
@@ -208,8 +208,10 @@ void GamePlayLayer::createBoxExplo(cocos2d::Node *box, bool isCircle){
         auto end2 = CallFunc::create([&, miniBox](){
             miniBox->removeFromParent();
             if (noMoreLifes) {
+                int highScore = this->gameCon->getHighScore();
+                int score = this->gameCon->getGameScore();
                 this->deleteAll();
-                this->gameOverCall(this->gameCon->getGameScore(), this->gameCon->getHighScore());
+                this->gameOverCall(score, highScore);
             }
         });
         

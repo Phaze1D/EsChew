@@ -15,8 +15,8 @@ class GameStageController {
     
 private:
     float gameTime = 0;
-    float gameScore = 0;
-    float highScore = 10;
+    int gameScore = 0;
+    int highScore = 10;
     
     int next = 1;
     

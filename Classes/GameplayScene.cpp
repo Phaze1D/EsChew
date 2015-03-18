@@ -71,9 +71,13 @@ void GameplayScene::createCountDown(){
     this->addChild(countLayer);
     
     
+    
     countLayer->countFinishedCall = [&, countLayer](){
         countLayer->removeAllChildren();
         countLayer->removeFromParent();
+        
+        
+        
         this->createGamePlayLayer();
     };
 }
@@ -94,6 +98,24 @@ void GameplayScene::createGamePlayLayer(){
 }
 
 void GameplayScene::createGameOverLayer(int score, int highScore){
+    GameOverLayer * gameOver = GameOverLayer::create();
+    gameOver->buildLayer(score, highScore);
+    this->addChild(gameOver);
+    
+    gameOver->homeClicked = [&, gameOver](){
+        gameOver->removeAllChildren();
+        gameOver->removeFromParent();
+        this->homeClick();
+    };
+    
+    
+    gameOver->restartClicked = [&, gameOver](){
+        gameOver->removeAllChildren();
+        gameOver->removeFromParent();
+        this->createCountDown();
+    };
+    
+    
     
 }
 
