@@ -16,6 +16,9 @@
 
 class MainController{
     
+private:
+    bool gameSceneCreate =false;
+    
     
 public:
         

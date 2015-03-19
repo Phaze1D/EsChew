@@ -76,15 +76,16 @@ void GameplayScene::createCountDown(){
         countLayer->removeAllChildren();
         countLayer->removeFromParent();
         
-        
-        
         this->createGamePlayLayer();
     };
 }
 
+
 void GameplayScene::createGamePlayLayer(){
     
     GamePlayLayer * gameLayer = GamePlayLayer::create(Color4B(255, 255, 255, 0));
+    gameLayer->setTag(GAME_LAYER_TAG);
+    
     
     gameLayer->gameOverCall = [&,gameLayer](int score, int highScore){
         gameLayer->removeFromParent();
@@ -95,6 +96,40 @@ void GameplayScene::createGamePlayLayer(){
     this->addChild(gameLayer);
     
     
+}
+
+void GameplayScene::pauseGamePlayLayer(){
+    if (this->getChildByTag(GAME_LAYER_TAG)) {
+        GamePlayLayer* glayer = (GamePlayLayer*)(this->getChildByTag(GAME_LAYER_TAG));
+        glayer->pauseLayer();
+
+    }
+    
+}
+
+void GameplayScene::resumeGamePlayLayer(){
+    
+    if (this->getChildByTag(GAME_LAYER_TAG)) {
+    
+        Size winSize = Director::getInstance()->getWinSize();
+        
+        CountDownLayer * countLayer = CountDownLayer::create(Color4B(255, 255, 255, 0));
+        countLayer->setBoxSize(Size(6, 6));
+        countLayer->createCountDown();
+        countLayer->setPosition(winSize.width/2 - countLayer->getContentSize().width/2, winSize.height/2 - countLayer->getContentSize().height/2);
+        countLayer->beginCountDown();
+        this->addChild(countLayer);
+        
+        
+        
+        countLayer->countFinishedCall = [&, countLayer](){
+            countLayer->removeAllChildren();
+            countLayer->removeFromParent();
+            GamePlayLayer* glayer = (GamePlayLayer*)(this->getChildByTag(GAME_LAYER_TAG));
+            glayer->resumeLayer();
+            
+        };
+    }
 }
 
 void GameplayScene::createGameOverLayer(int score, int highScore){

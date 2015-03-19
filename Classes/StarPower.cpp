@@ -31,7 +31,7 @@ void StarPower::createPhysicsBody(){
     phyBody->setDynamic(true);
     phyBody->setContactTestBitmask(true);
     phyBody->setCategoryBitmask(true);
-    phyBody->setAngularVelocity(8);
+    //phyBody->setAngularVelocity(8);
     this->setPhysicsBody(phyBody);
         
 }

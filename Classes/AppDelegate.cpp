@@ -43,3 +43,5 @@ void AppDelegate::applicationDidEnterBackground() {
 void AppDelegate::applicationWillEnterForeground() {
     controller->resume();
 }
+
+

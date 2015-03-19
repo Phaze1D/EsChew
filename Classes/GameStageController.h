@@ -10,19 +10,33 @@
 #define __SQ__GameStageController__
 
 #include <stdio.h>
+#include <vector>
+#include "PlayerData.h"
+#include "MySpawner.h"
+
+
 
 class GameStageController {
     
 private:
-    float gameTime = 0;
-    int gameScore = 0;
-    int highScore = 10;
     
+    std::vector<MySpawner*> spawners;
+    std::vector<int> stages;
+    
+    float gameTime = 0;
+    
+    int gameScore = 0;
+    int highScore = 0;
     int next = 1;
     
     bool newRecordReached = false;
+    bool setStage = false;
+    
+    int stageAt = 0;
     
 public:
+    
+    void init(std::vector<MySpawner*> spawners);
     
     int increaseScore();
     int increaseScoreByHit();
@@ -30,9 +44,16 @@ public:
     int getGameScore();
     int getHighScore();
     
-    void increaseGameTime(float amount);
+    void update(float amount);
     
     bool recordReached();
+
+private:
+    void createCombination();
+    void setStageOptions();
+  
+    
+    
     
     
 };

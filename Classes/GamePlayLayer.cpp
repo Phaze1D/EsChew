@@ -37,7 +37,7 @@ void GamePlayLayer::update(float deltaTime){
             this->spawnStar(deltaTime);
         }
         
-        gameCon->increaseGameTime(deltaTime);
+        gameCon->update(deltaTime);
         
         this->updatePointsLabel(gameCon->increaseScore());
         
@@ -364,18 +364,15 @@ Vec2 GamePlayLayer::getExploPoint(int i, Vec2 startPosition){
     
 }
 
-
-
 void GamePlayLayer::buildGameLayer(){
-    
-    gameCon = new GameStageController();
     
     this->createSpawners();
     this->createCircle();
     this->createLivesLayer();
     this->createPointLabel();
     this->addTouchHandlers();
-    
+    gameCon = new GameStageController();
+    gameCon->init(spawners);
     
     this->scheduleUpdate();
     
@@ -391,28 +388,24 @@ void GamePlayLayer::createLivesLayer(){
 void GamePlayLayer::createSpawners(){
     spawners.reserve(4);
     
-    MySpawner * spawner1 = new MySpawner();
-    spawner1->createSpawner(UPPER, this->getBoundingBox());
-    spawner1->spawnRate = 1/1;
-    //spawner1->spawnReady = true;
-    spawners.push_back(spawner1);
-    
     MySpawner * spawner2 = new MySpawner();
     spawner2->createSpawner(RIGHT, this->getBoundingBox());
     spawner2->spawnRate = 1/5.0;
-    spawner2->spawnReady = true;
     spawners.push_back(spawner2);
+    
+    MySpawner * spawner1 = new MySpawner();
+    spawner1->createSpawner(UPPER, this->getBoundingBox());
+    spawner1->spawnRate = 1/1;
+    spawners.push_back(spawner1);
     
     MySpawner * spawner3 = new MySpawner();
     spawner3->createSpawner(LOWER, this->getBoundingBox());
     spawner3->spawnRate = 1/1;
-    //spawner3->spawnReady = true;
     spawners.push_back(spawner3);
     
     MySpawner * spawner4 = new MySpawner();
     spawner4->createSpawner(LEFT, this->getBoundingBox());
     spawner4->spawnRate = 1/1;
-    //spawner4->spawnReady = true;
     spawners.push_back(spawner4);
 }
 
@@ -461,12 +454,19 @@ void GamePlayLayer::deleteNodesIn(){
     }
     nodesIn.clear();
     
+    
+    
+}
+
+void GamePlayLayer::saveDataAndDelete(){
+    
     delete gameCon;
 }
 
 void GamePlayLayer::deleteAll(){
     this->deleteNodesIn();
     this->deleteSpawners();
+    this->saveDataAndDelete();
     this->removeAllChildren();
 }
 
@@ -475,6 +475,17 @@ void GamePlayLayer::scaleCorrectly(float scale, Sprite * sprite){
     cocos2d::Texture2D::TexParams texpar = {GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE};
     sprite->getTexture()->setTexParameters(texpar);
     sprite->setScale(scale);
+}
+
+void GamePlayLayer::pauseLayer(){
+    isPaused = true;
+    this->pausePhysics();
+}
+
+void GamePlayLayer::resumeLayer(){
+    isPaused = false;
+    this->resumePhysics();
+    
 }
 
 void GamePlayLayer::addTouchHandlers(){

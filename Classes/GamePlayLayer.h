@@ -48,6 +48,9 @@ public:
     
     void update(float) override;
     
+    void pauseLayer();
+    void resumeLayer();
+    
 private:
     
     void buildGameLayer();
@@ -87,6 +90,8 @@ private:
     void updateSpawnRate();
     
     cocos2d::Vec2 getExploPoint(int i, cocos2d::Vec2 startPosition);
+    
+    void saveDataAndDelete();
     
     void deleteAll();
     

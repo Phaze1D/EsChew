@@ -359,10 +359,11 @@ void IntroLayer::createCircleSwitchAni(){
 
 void IntroLayer::buildCrossButton(){
     
-    auto crossButton = Sprite::create("cross.png");
-    this->scaleCorrectly(.3, crossButton);
+    auto crossButton = Label::createWithTTF("Start", "fonts/Titillium-Light.otf", 43);
+    //this->scaleCorrectly(.3, crossButton);
     crossButton->setAnchorPoint(Vec2(0.5, 0.5));
     crossButton->setPosition(Vec2(0, this->getContentSize().height));
+    
     this->addChild(crossButton);
    
     

@@ -32,6 +32,13 @@ void MainController::begin(){
 
 void MainController::pause(){
     Director::getInstance()->stopAnimation();
+    PlayerData::getInstance()->savedData();
+    
+    if (gameSceneCreate) {
+        GameplayScene* scene = (GameplayScene*)Director::getInstance()->getRunningScene();
+        scene->pauseGamePlayLayer();
+    }
+    
     
     // if you use SimpleAudioEngine, it must be pause
     // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
@@ -39,6 +46,12 @@ void MainController::pause(){
 
 void MainController::resume(){
     Director::getInstance()->startAnimation();
+    
+    if (gameSceneCreate) {
+        GameplayScene* scene = (GameplayScene*)Director::getInstance()->getRunningScene();
+        scene->resumeGamePlayLayer();
+    }
+
     
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
@@ -61,6 +74,7 @@ void MainController::createMainMenuScene(){
         director->runWithScene(mainMenuScene);
         
     }
+    gameSceneCreate = false;
     
     
     mainMenuScene->labelLayer->playClicked = [&, mainMenuScene](){
@@ -77,6 +91,7 @@ void MainController::createGameplayScene(){
     auto gameplayScene = GameplayScene::createWithPhysics();
     Director::getInstance()->replaceScene(gameplayScene);
     
+    gameSceneCreate = true;
     
     gameplayScene->homeClick = [&, gameplayScene](){
         gameplayScene->removeAllChildren();

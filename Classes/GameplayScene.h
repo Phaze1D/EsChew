@@ -20,10 +20,16 @@ class GameplayScene: public cocos2d::Scene {
     
     
 public:
+    
+    static const int GAME_LAYER_TAG = 23;
+    
     static GameplayScene * createWithPhysics();
    
     typedef std::function<void()> HomeCallBack;
     HomeCallBack homeClick;
+    
+    void pauseGamePlayLayer();
+    void resumeGamePlayLayer();
     
 private:
     void buildScene();
@@ -32,9 +38,6 @@ private:
     void createCountDown();
     void createGamePlayLayer();
     void createGameOverLayer(int score, int highScore);
-    
-    
-    
     
 };
 
