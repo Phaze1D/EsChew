@@ -14,7 +14,7 @@ void MySpawner::createSpawner(SpawnerPosition position, Rect sceneRect){
     this->position = position;
     
 }
-SquareBox* MySpawner::spawnBox(Size boxSize, float velocity){
+SquareBox* MySpawner::spawnBox(Size boxSize){
     
     if (timePassed >= spawnRate && spawnReady) {
         
@@ -23,8 +23,7 @@ SquareBox* MySpawner::spawnBox(Size boxSize, float velocity){
         box->setColor(this->createRandomBrightColor());
         box->setPosition(this->getRandomPosition());
         box->createPhysicsBody(boxSize);
-        this->getFinalVelocity(velocity);
-        box->velocity = this->getFinalVelocity(velocity);
+        box->velocity = this->getFinalVelocity(spaVelocity);
         box->getPhysicsBody()->setVelocity(box->velocity);
         box->getPhysicsBody()->setCategoryBitmask(true);
         box->getPhysicsBody()->setCollisionBitmask(this->getBoxCat());

@@ -51,7 +51,7 @@ void GamePlayLayer::update(float deltaTime){
 void GamePlayLayer::spawnBall(float deltaTime){
     
     for (int i = 0; i < spawners.size(); i++) {
-        SquareBox * box = spawners.at(i)->spawnBox(Size(16, 16), 200);
+        SquareBox * box = spawners.at(i)->spawnBox(Size(20, 20));
         
         if (box) {
             box->retain();
@@ -267,7 +267,20 @@ void GamePlayLayer::createCircleSwitchAni(){
 }
 
 void GamePlayLayer::createNewRecordAni(){
+    Label * newRec = Label::createWithTTF("New Record", "fonts/Titillium-Light.otf", 42);
+    newRec->setColor(Color3B::GREEN);
+    newRec->setAnchorPoint(Vec2(.5, .5));
+    newRec->setPosition(this->getContentSize().width/2, this->getContentSize().height/2);
     
+    auto scaleUp = ScaleTo::create(1, 1.5);
+    
+    auto callBa = CallFunc::create([newRec](){
+        newRec->removeFromParent();
+    });
+    
+    newRec->runAction(Sequence::create(scaleUp,callBa, NULL));
+    
+    this->addChild(newRec);
 }
 
 void GamePlayLayer::pausePhysics(){

@@ -28,8 +28,11 @@ public:
     
     float timePassed = 0;
     float spawnRate = 1;
+    float spaVelocity = 0;
     
     bool spawnReady = false;
+    
+    
     
     
 private:
@@ -42,7 +45,7 @@ public:
     
     void createSpawner(SpawnerPosition position, cocos2d::Rect sceneRect);
     
-    SquareBox* spawnBox(cocos2d::Size boxSize, float velocity);
+    SquareBox* spawnBox(cocos2d::Size boxSize);
     
     SquareBox* introSpawnBox(cocos2d::Size boxSize, float velocity);
     

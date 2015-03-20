@@ -252,7 +252,7 @@ void LabelBoxesLayer::moveBoxesToFinal(){
 
 void LabelBoxesLayer::moveBoxesOut(){
     
-    auto move = MoveTo::create(2.5, this->getRandomOuterPosition());
+    auto move = MoveTo::create(2, this->getRandomOuterPosition());
     
     auto callBack = CallFunc::create([&](){
         this->removeAllChildren();

@@ -51,7 +51,8 @@ public:
 private:
     void createCombination();
     void setStageOptions();
-  
+    void setVelocity();
+    void setSpawnRate();
     
     
     

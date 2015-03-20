@@ -25,7 +25,7 @@ void GameStageController::update(float amount){
         setStage = true;
     }
     
-    
+    this->setVelocity();
     
 }
 
@@ -47,6 +47,19 @@ void GameStageController::setStageOptions(){
         spawnerNumber = combinationNumber%10;
     }
    
+}
+
+void GameStageController::setVelocity(){
+    for (int i = 0; i < spawners.size(); i++) {
+        if (spawners[i]->spawnReady) {
+            spawners[i]->spaVelocity = (gameTime/2)*sinf(.15*gameTime)+ (4*gameTime) + 100;
+           
+        }
+    }
+}
+
+void GameStageController::setSpawnRate(){
+    
 }
 
 int GameStageController::increaseScore(){
@@ -91,36 +104,7 @@ bool GameStageController::recordReached(){
 
 void GameStageController::createCombination(){
     
-    /*
-     
-     r = 4
-     u = 1
-     b = 2
-     l = 3
-     
-     r-
-     u-
-     l-
-     b-
-     
-     ur-
-     lr-
-     br-
-     ul-
-     ub-
-     bl
-     
-     ulr
-     ubr
-     blr
-     blu
-     
-     rblu
-     
-     */
-    
     stages.reserve(15);
-    
     
     stages.push_back(4);
     stages.push_back(1);
