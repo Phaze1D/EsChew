@@ -14,6 +14,24 @@ void MySpawner::createSpawner(SpawnerPosition position, Rect sceneRect){
     this->position = position;
     
 }
+
+
+void MySpawner::setSpawnerDifficulty(float spawnerD){
+    
+    int sDiff = random(spawnerD - minDiff, spawnerD + maxDiff);
+    
+    this->calculateVelocity(sDiff);
+    this->calculateRate(sDiff);
+}
+
+void MySpawner::calculateVelocity(float spawnerD){
+    spaVelocity = spawnerD;
+}
+
+void MySpawner::calculateRate(float spawnerD){
+    spawnRate = 100/spaVelocity;
+}
+
 SquareBox* MySpawner::spawnBox(Size boxSize){
     
     if (timePassed >= spawnRate && spawnReady) {

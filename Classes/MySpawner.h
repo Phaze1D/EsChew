@@ -41,6 +41,9 @@ private:
     
     float passIntroY = 0;
     
+    int maxDiff = 100;
+    int minDiff = 100;
+    
 public:
     
     void createSpawner(SpawnerPosition position, cocos2d::Rect sceneRect);
@@ -50,6 +53,8 @@ public:
     SquareBox* introSpawnBox(cocos2d::Size boxSize, float velocity);
     
     StarPower * spawnStar(float velocity);
+    
+    void setSpawnerDifficulty(float spawnerD);
   
 private:
     cocos2d::Color3B createRandomBrightColor();
@@ -59,6 +64,9 @@ private:
     cocos2d::Vec2 getFinalVelocity(float velocity);
     
     void scaleCorrectly(float scale, cocos2d::Sprite * sprite);
+    
+    void calculateVelocity(float spawnerD);
+    void calculateRate(float spawnerD);
     
     int getBoxCat();
     

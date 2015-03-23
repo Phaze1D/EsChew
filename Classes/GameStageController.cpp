@@ -9,6 +9,7 @@
 #include "GameStageController.h"
 
 
+
 void GameStageController::init(std::vector<MySpawner*> spawners){
     this->spawners = spawners;
     highScore = PlayerData::getInstance()->getHighScore();
@@ -25,11 +26,21 @@ void GameStageController::update(float amount){
         setStage = true;
     }
     
-    this->setVelocity();
+    if ((int)gameTime == nextStage) {
+        nextStage+= 40;
+        stageAt++;
+        setStage = false;
+    }
+    
+    this->setTotalDifficulty();
     
 }
 
 void GameStageController::setStageOptions(){
+    
+    for (int i = 0; i < spawners.size(); i++) {
+        spawners[i]->spawnReady = false;
+    }
     
     int combinationNumber = stages.at(stageAt);
     
@@ -46,27 +57,35 @@ void GameStageController::setStageOptions(){
         
         spawnerNumber = combinationNumber%10;
     }
-   
-}
-
-void GameStageController::setVelocity(){
-    for (int i = 0; i < spawners.size(); i++) {
-        if (spawners[i]->spawnReady) {
-            spawners[i]->spaVelocity = (gameTime/2)*sinf(.15*gameTime)+ (4*gameTime) + 100;
-           
-        }
-    }
-}
-
-void GameStageController::setSpawnRate(){
     
 }
+
+void GameStageController::setTotalDifficulty(){
+    
+    float difficulty = 4*gameTime +100; //some function of gameTime
+    
+    
+    int spawnerCount = 0;
+    for (int i = 0; i < spawners.size(); i++) {
+        if (spawners[i]->spawnReady) {
+            spawnerCount++;
+        }
+    }
+    
+    for (int i = 0; i < spawners.size(); i++) {
+        if (spawners[i]->spawnReady) {
+            spawners[i]->setSpawnerDifficulty(difficulty/spawnerCount);
+        }
+    }
+    
+}
+
 
 int GameStageController::increaseScore(){
     
-    if ((int)gameTime == next) {
+    if ((int)gameTime == nextScore) {
         gameScore+= 1;
-        next+= 1;
+        nextScore+= 1;
         return gameScore;
     }
     

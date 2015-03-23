@@ -27,12 +27,12 @@ private:
     
     int gameScore = 0;
     int highScore = 0;
-    int next = 1;
+    int nextScore = 1;
+    int stageAt = 0;
+    int nextStage = 40;
     
     bool newRecordReached = false;
     bool setStage = false;
-    
-    int stageAt = 0;
     
 public:
     
@@ -51,8 +51,7 @@ public:
 private:
     void createCombination();
     void setStageOptions();
-    void setVelocity();
-    void setSpawnRate();
+    void setTotalDifficulty();
     
     
     

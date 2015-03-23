@@ -403,7 +403,8 @@ void GamePlayLayer::createSpawners(){
     
     MySpawner * spawner2 = new MySpawner();
     spawner2->createSpawner(RIGHT, this->getBoundingBox());
-    spawner2->spawnRate = 1/5.0;
+    spawner2->spawnRate = 1/1.0;
+    spawner2->spaVelocity = 100;
     spawners.push_back(spawner2);
     
     MySpawner * spawner1 = new MySpawner();
