@@ -33,8 +33,13 @@ void GamePlayLayer::update(float deltaTime){
         this->spawnBall(deltaTime);
         this->checkBoxIn();
         
-        if (test == 10) {
-            this->spawnStar(deltaTime);
+        for (int i = 0; i < spawners.size(); i++) {
+         
+            if (spawners[i]->spStar) {
+                this->spawnStar(deltaTime);
+                spawners[i]->spStar = false;
+            }
+            
         }
         
         gameCon->update(deltaTime);
@@ -65,7 +70,7 @@ void GamePlayLayer::spawnBall(float deltaTime){
 }
 
 void GamePlayLayer::spawnStar(float deltaTime){
-    auto star = spawners[random(0, 3)]->spawnStar(400);
+    auto star = spawners[random(0, 3)]->spawnStar(200);
     this->addChild(star);
     test++;
     

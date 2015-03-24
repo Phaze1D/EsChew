@@ -47,6 +47,13 @@ SquareBox* MySpawner::spawnBox(Size boxSize){
         box->getPhysicsBody()->setCollisionBitmask(this->getBoxCat());
         
         timePassed = 0;
+        
+        
+        if (random(0, 1000) < starPer) {
+            spStar = true;
+        }
+        
+        
         return box;
     }
     

@@ -133,6 +133,14 @@ void GameplayScene::resumeGamePlayLayer(){
 }
 
 void GameplayScene::createGameOverLayer(int score, int highScore){
+   
+    if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) {
+        gene::AdMobCPP admob = gene::AdMobCPP();
+        admob.showAd();
+    }
+    
+    
+    
     GameOverLayer * gameOver = GameOverLayer::create();
     gameOver->buildLayer(score, highScore);
     this->addChild(gameOver);

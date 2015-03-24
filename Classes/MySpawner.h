@@ -30,9 +30,11 @@ public:
     float spawnRate = 1;
     float spaVelocity = 0;
     
+    float starPer = 4;
+    
     bool spawnReady = false;
     
-    
+    bool spStar = false;
     
     
 private:

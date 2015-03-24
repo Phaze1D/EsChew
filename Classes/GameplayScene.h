@@ -15,6 +15,7 @@
 #include "CountDownLayer.h"
 #include "GamePlayLayer.h"
 #include "GameOverLayer.h"
+#include "AdMobCPP.h"
 
 class GameplayScene: public cocos2d::Scene {
     

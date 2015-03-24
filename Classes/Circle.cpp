@@ -55,7 +55,11 @@ void Circle::createPhysicsBody(){
 
 void Circle::runStarPowerAnimation(){
     Color3B color = this->getColor();
+    
+    this->stopAllActions();
     this->isPowerActive = true;
+    
+    
     
     auto delay = DelayTime::create(.2);
     auto callBack = CallFunc::create([&](){

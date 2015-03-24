@@ -30,6 +30,10 @@ void GameStageController::update(float amount){
         nextStage+= 40;
         stageAt++;
         setStage = false;
+        
+        if (stageAt == 15) {
+            stageAt = 0;
+        }
     }
     
     this->setTotalDifficulty();
