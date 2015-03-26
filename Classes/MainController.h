@@ -19,6 +19,9 @@ class MainController{
 private:
     bool gameSceneCreate =false;
     
+    GameplayScene* gameplayScene;
+    MainMenuScene* mainMenuScene;
+    
     
 public:
         
@@ -39,6 +42,7 @@ public:
     
     //Creates the gameplay Scene
     void createGameplayScene();
+    
 
     
 private:

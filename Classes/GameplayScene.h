@@ -15,14 +15,15 @@
 #include "CountDownLayer.h"
 #include "GamePlayLayer.h"
 #include "GameOverLayer.h"
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #include "AdMobCPP.h"
+#endif
 
 class GameplayScene: public cocos2d::Scene {
     
     
 public:
-    
-    static const int GAME_LAYER_TAG = 23;
     
     static GameplayScene * createWithPhysics();
    
@@ -31,6 +32,11 @@ public:
     
     void pauseGamePlayLayer();
     void resumeGamePlayLayer();
+    
+    IntroLayer * intro;
+    CountDownLayer * countLayer;
+    GamePlayLayer * gameLayer;
+    GameOverLayer * gameOver;
     
 private:
     void buildScene();

@@ -1,6 +1,7 @@
 CMakeLists.txt
 cocos2d/
 proj.*/
+bin/
 
 
 .DS_Store

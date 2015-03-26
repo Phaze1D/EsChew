@@ -17,6 +17,7 @@
 #include "Circle.h"
 #include "SquareBox.h"
 #include "GameStageController.h"
+#include "GameOverLayer.h"
 #include "LivesLayer.h"
 
 

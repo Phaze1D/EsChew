@@ -10,7 +10,17 @@
 #define __SQ__GameOverLayer__
 
 #include <stdio.h>
+#include <sstream>
+#include <string>
 #include "cocos2d.h"
+
+template <typename T>
+std::string to_string(T value)
+{
+    std::ostringstream os ;
+    os << value ;
+    return os.str() ;
+}
 
 class GameOverLayer: public cocos2d::Layer{
     

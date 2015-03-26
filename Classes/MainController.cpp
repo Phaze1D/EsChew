@@ -21,7 +21,7 @@ void MainController::begin(){
     }
     
     // turn on display FPS
-    director->setDisplayStats(false);
+    director->setDisplayStats(true);
     
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
@@ -64,7 +64,7 @@ void MainController::end(){
 void MainController::createMainMenuScene(){
     
     
-    auto mainMenuScene = MainMenuScene::create();
+    mainMenuScene = MainMenuScene::create();
     Director* director = Director::getInstance();
     
     if (director->getRunningScene()) {
@@ -77,7 +77,7 @@ void MainController::createMainMenuScene(){
     gameSceneCreate = false;
     
     
-    mainMenuScene->labelLayer->playClicked = [&, mainMenuScene](){
+    mainMenuScene->labelLayer->playClicked = [&](){
         mainMenuScene->removeAllChildren();
         this->createGameplayScene();
         
@@ -88,19 +88,19 @@ void MainController::createMainMenuScene(){
 
 void MainController::createGameplayScene(){
     
-    auto gameplayScene = GameplayScene::createWithPhysics();
+    gameplayScene = GameplayScene::createWithPhysics();
     Director::getInstance()->replaceScene(gameplayScene);
     
     gameSceneCreate = true;
     
-    gameplayScene->homeClick = [&, gameplayScene](){
+    gameplayScene->homeClick = [&](){
         gameplayScene->removeAllChildren();
         this->createMainMenuScene();
        
     };
     
     
-    
 }
+
 
 

@@ -79,29 +79,38 @@ void GamePlayLayer::spawnStar(float deltaTime){
 void GamePlayLayer::updatePointsLabel(int amount){
     
     if (amount > 0) {
-        pointsLabel->setString(std::to_string(amount));
+        pointsLabel->setString(to_string(amount));
     }
 
 }
 
 void GamePlayLayer::checkBoxIn(){
-    
-    for (auto it = nodesIn.cbegin(); it != nodesIn.cend(); it++) {
-        
-        if ((*it)->getReferenceCount() == 2) {
-            bool isInside = (*it)->getPosition().x < 0 || (*it)->getPosition().x > this->getContentSize().width || (*it)->getPosition().y < 0 || (*it)->getPosition().y > this->getContentSize().height;
-            
-            if (isInside){
-                (*it)->removeFromParent();
-                (*it)->release();
-                nodesIn.erase(it);
-            }
-        }else if( (*it)->getReferenceCount() == 1){
-            (*it)->release();
-            nodesIn.erase(it);
-        }
-        
+
+
+	auto it = nodesIn.begin();
+
+    while (it != nodesIn.end()){
+
+    	if ((*it)->getReferenceCount() == 2) {
+    		bool isInside = (*it)->getPosition().x < 0 || (*it)->getPosition().x > this->getContentSize().width || (*it)->getPosition().y < 0 || (*it)->getPosition().y > this->getContentSize().height;
+
+    		if (isInside){
+    			(*it)->removeFromParent();
+    			(*it)->release();
+    			it = nodesIn.erase(it);
+    		}else{
+    			++it;
+    		}
+    	}else if( (*it)->getReferenceCount() == 1){
+    		(*it)->release();
+    		it = nodesIn.erase(it);
+    	}else{
+    		++it;
+    	}
     }
+
+
+
 }
 
 bool GamePlayLayer::onContactBegin(cocos2d::PhysicsContact &contact){
@@ -211,13 +220,14 @@ void GamePlayLayer::createBoxExplo(cocos2d::Node *box, bool isCircle){
         });
         
         auto end2 = CallFunc::create([&, miniBox](){
-            miniBox->removeFromParent();
+
             if (noMoreLifes) {
                 int highScore = this->gameCon->getHighScore();
                 int score = this->gameCon->getGameScore();
                 this->deleteAll();
                 this->gameOverCall(score, highScore);
             }
+            miniBox->removeFromParent();
         });
         
         if (i == 7) {

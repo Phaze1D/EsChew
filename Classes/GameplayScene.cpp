@@ -45,17 +45,18 @@ void GameplayScene::createBackground(){
 
 void GameplayScene::createIntroLayer(){
     Size winSize = Director::getInstance()->getWinSize();
-    IntroLayer * intro = IntroLayer::create(Color4B(148,0,211,50));
+    intro = IntroLayer::create(Color4B(148,0,211,50));
     intro->setContentSize(Size(winSize.width - 180, winSize.height - 150));
     intro->setPosition(winSize.width/2 - intro->getContentSize().width/2, winSize.height/2 - intro->getContentSize().height/2);
     intro->buildIntro();
+    intro->setTag(234);
     this->addChild(intro);
   
-    intro->crossClicked = [&, intro](){
+    intro->crossClicked = [&](){
+        this->createCountDown();
         intro->removeAllChildren();
         intro->removeFromParent();
-        
-        this->createCountDown();
+
     };
 }
 
@@ -63,34 +64,34 @@ void GameplayScene::createCountDown(){
     
     Size winSize = Director::getInstance()->getWinSize();
     
-    CountDownLayer * countLayer = CountDownLayer::create(Color4B(255, 255, 255, 0));
+    countLayer = CountDownLayer::create(Color4B(255, 255, 255, 0));
     countLayer->setBoxSize(Size(6, 6));
     countLayer->createCountDown();
     countLayer->setPosition(winSize.width/2 - countLayer->getContentSize().width/2, winSize.height/2 - countLayer->getContentSize().height/2);
     countLayer->beginCountDown();
     this->addChild(countLayer);
     
-    
-    
-    countLayer->countFinishedCall = [&, countLayer](){
+    countLayer->countFinishedCall = [&](){
+    	this->createGamePlayLayer();
         countLayer->removeAllChildren();
         countLayer->removeFromParent();
         
-        this->createGamePlayLayer();
     };
+
+
+
+
 }
 
 
 void GameplayScene::createGamePlayLayer(){
     
-    GamePlayLayer * gameLayer = GamePlayLayer::create(Color4B(255, 255, 255, 0));
-    gameLayer->setTag(GAME_LAYER_TAG);
+    gameLayer = GamePlayLayer::create(Color4B(255, 255, 255, 0));
     
     
-    gameLayer->gameOverCall = [&,gameLayer](int score, int highScore){
-        gameLayer->removeFromParent();
+    gameLayer->gameOverCall = [&](int score, int highScore){
         this->createGameOverLayer(score, highScore);
-        
+        gameLayer->removeFromParent();
     };
     
     this->addChild(gameLayer);
@@ -99,9 +100,8 @@ void GameplayScene::createGamePlayLayer(){
 }
 
 void GameplayScene::pauseGamePlayLayer(){
-    if (this->getChildByTag(GAME_LAYER_TAG)) {
-        GamePlayLayer* glayer = (GamePlayLayer*)(this->getChildByTag(GAME_LAYER_TAG));
-        glayer->pauseLayer();
+    if (gameLayer) {
+        gameLayer->pauseLayer();
 
     }
     
@@ -109,11 +109,11 @@ void GameplayScene::pauseGamePlayLayer(){
 
 void GameplayScene::resumeGamePlayLayer(){
     
-    if (this->getChildByTag(GAME_LAYER_TAG)) {
+    if (gameLayer) {
     
         Size winSize = Director::getInstance()->getWinSize();
         
-        CountDownLayer * countLayer = CountDownLayer::create(Color4B(255, 255, 255, 0));
+        countLayer = CountDownLayer::create(Color4B(255, 255, 255, 0));
         countLayer->setBoxSize(Size(6, 6));
         countLayer->createCountDown();
         countLayer->setPosition(winSize.width/2 - countLayer->getContentSize().width/2, winSize.height/2 - countLayer->getContentSize().height/2);
@@ -122,40 +122,39 @@ void GameplayScene::resumeGamePlayLayer(){
         
         
         
-        countLayer->countFinishedCall = [&, countLayer](){
-            countLayer->removeAllChildren();
+        countLayer->countFinishedCall = [&](){
+        	gameLayer->resumeLayer();
+        	countLayer->removeAllChildren();
             countLayer->removeFromParent();
-            GamePlayLayer* glayer = (GamePlayLayer*)(this->getChildByTag(GAME_LAYER_TAG));
-            glayer->resumeLayer();
             
+
         };
     }
 }
 
 void GameplayScene::createGameOverLayer(int score, int highScore){
    
-    if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS) {
-        gene::AdMobCPP admob = gene::AdMobCPP();
-        admob.showAd();
-    }
+    #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+     gene::AdMobCPP admob = gene::AdMobCPP();
+     admob.showAd();
+    #endif
     
     
     
-    GameOverLayer * gameOver = GameOverLayer::create();
+    gameOver = GameOverLayer::create();
     gameOver->buildLayer(score, highScore);
     this->addChild(gameOver);
     
-    gameOver->homeClicked = [&, gameOver](){
-        gameOver->removeAllChildren();
-        gameOver->removeFromParent();
+    gameOver->homeClicked = [&](){
         this->homeClick();
     };
+
     
-    
-    gameOver->restartClicked = [&, gameOver](){
-        gameOver->removeAllChildren();
+    gameOver->restartClicked = [&](){
+    	 this->createCountDown();
+    	gameOver->removeAllChildren();
         gameOver->removeFromParent();
-        this->createCountDown();
+
     };
     
     

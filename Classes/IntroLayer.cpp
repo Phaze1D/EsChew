@@ -378,8 +378,9 @@ void IntroLayer::buildCrossButton(){
         rect.size.width = rect.size.width*5;
         
         if (rect.containsPoint(point)) {
-            this->endIntro();
-           
+        	Director::getInstance()->getEventDispatcher()->pauseEventListenersForTarget(crossButton);
+        	this->endIntro();
+
             return true;
         }
         

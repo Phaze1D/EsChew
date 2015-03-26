@@ -54,7 +54,7 @@ void GameOverLayer::createHighScore(){
     highL->setPosition(this->getContentSize().width/2, this->getContentSize().height/2);
     this->addChild(highL);
     
-    Label * highLI = Label::createWithTTF(std::to_string(highScore), "fonts/Titillium-Light.otf", 38);
+    Label * highLI = Label::createWithTTF(to_string(highScore), "fonts/Titillium-Light.otf", 38);
     highLI->setHorizontalAlignment(TextHAlignment::CENTER);
     highLI->setTag(4);
     highLI->setAnchorPoint(Vec2(.5, .5));
@@ -72,7 +72,7 @@ void GameOverLayer::createScore(){
     scoreL->setPosition(this->getContentSize().width/2, this->getContentSize().height - scoreL->getContentSize().height*2);
     this->addChild(scoreL);
     
-    Label * scoreLI = Label::createWithTTF(std::to_string(score), "fonts/Titillium-Light.otf", 48);
+    Label * scoreLI = Label::createWithTTF(to_string(score), "fonts/Titillium-Light.otf", 48);
     scoreLI->setHorizontalAlignment(TextHAlignment::CENTER);
     scoreLI->setAnchorPoint(Vec2(.5, 1));
     scoreLI->setColor(Color3B::ORANGE);
