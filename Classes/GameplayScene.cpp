@@ -8,6 +8,8 @@
 
 #include "GameplayScene.h"
 
+
+
 USING_NS_CC;
 
 
@@ -94,13 +96,14 @@ void GameplayScene::createGamePlayLayer(){
         gameLayer->removeFromParent();
     };
     
+    playing = true;
     this->addChild(gameLayer);
     
     
 }
 
 void GameplayScene::pauseGamePlayLayer(){
-    if (gameLayer) {
+    if (playing) {
         gameLayer->pauseLayer();
 
     }
@@ -109,7 +112,7 @@ void GameplayScene::pauseGamePlayLayer(){
 
 void GameplayScene::resumeGamePlayLayer(){
     
-    if (gameLayer) {
+    if (playing) {
     
         Size winSize = Director::getInstance()->getWinSize();
         
@@ -138,8 +141,12 @@ void GameplayScene::createGameOverLayer(int score, int highScore){
      gene::AdMobCPP admob = gene::AdMobCPP();
      admob.showAd();
     #endif
+
+	#if  CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+        AndroidAdHelper::showAd();
+	#endif
     
-    
+     playing = false;
     
     gameOver = GameOverLayer::create();
     gameOver->buildLayer(score, highScore);

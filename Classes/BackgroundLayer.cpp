@@ -34,8 +34,8 @@ void BackgroundLayer::createParticles(){
     m_emitter->setAngleVar(360);
     m_emitter->setRadialAccel(0);
     m_emitter->setRadialAccelVar(0);
-    m_emitter->setTangentialAccel(0);
-    m_emitter->setTangentialAccelVar(0);
+    m_emitter->setTangentialAccel(random(-200,200));
+    m_emitter->setTangentialAccelVar(random(-200,200));
     m_emitter->setPosition(Point(size.width / 2, size.height/2));
     m_emitter->setPosVar(Point(size.width/2, size.height/2));
     m_emitter->setLife(3);
@@ -49,7 +49,7 @@ void BackgroundLayer::createParticles(){
     m_emitter->setEndColor(Color4F(1,1,1,1));
     m_emitter->setEndColorVar(Color4F(0,0,0,0));
     m_emitter->setStartSize(2);
-    m_emitter->setStartSizeVar(13);
+    m_emitter->setStartSizeVar(25);
     m_emitter->setEndSize(0);
     m_emitter->setEndSizeVar(0);
     m_emitter->setEmissionRate(3);

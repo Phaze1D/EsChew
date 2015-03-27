@@ -16,15 +16,22 @@
 #include "GamePlayLayer.h"
 #include "GameOverLayer.h"
 
+
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #include "AdMobCPP.h"
 #endif
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+#include "AndroidAdHelper.h"
+#endif
+
+
 
 class GameplayScene: public cocos2d::Scene {
     
     
 public:
-    
+
     static GameplayScene * createWithPhysics();
    
     typedef std::function<void()> HomeCallBack;
@@ -46,6 +53,8 @@ private:
     void createGamePlayLayer();
     void createGameOverLayer(int score, int highScore);
     
+    bool playing = false;
+
 };
 
 #endif /* defined(__SQ__GameplayScene__) */
