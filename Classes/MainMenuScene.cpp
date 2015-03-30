@@ -47,7 +47,7 @@ void MainMenuScene::createPlayBoxesLayer(){
     labelLayer->addRemoveAdL = [&](){
         if (true) {
             if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS) {
-                this->createRemoveAdsButton();
+                //this->createRemoveAdsButton();
             }
         }
     };

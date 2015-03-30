@@ -292,7 +292,7 @@ void LabelBoxesLayer::addEvents(){
             if (rect.containsPoint(point)) {
                 
                 if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS) {
-                    this->getScene()->getChildByTag(12)->removeFromParent();
+                   // this->getScene()->getChildByTag(12)->removeFromParent();
                 }
                 Director::getInstance()->getEventDispatcher()->pauseEventListenersForTarget(this);
                 this->moveBoxesOut();
